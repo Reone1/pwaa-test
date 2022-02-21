@@ -1,26 +1,13 @@
 package User
 
-import (
-	"github.com/graphql-go/graphql"
-)
-
 type User struct {
-	ID string `json:"id"`
-	Name string `json:"name"`
+	ID string `json:"_id"`
+	NickName string `json:"nickName"`
+	Mail string `json:"mail"`
 	Type string `json:"type"`
 }
 
-var Type = graphql.NewObject(graphql.ObjectConfig{
-	Name: "User",
-	Fields: graphql.Fields{
-		"id": &graphql.Field{
-			Type: graphql.String,
-		},
-		"name": &graphql.Field{
-			Type: graphql.String,
-		},
-		"type": &graphql.Field{
-			Type: graphql.Boolean,
-		},
-	},
-})
+type Token struct {
+	Key string `json:"key"`
+	Type string `json:"type"`
+}
