@@ -8,7 +8,12 @@ require (
 	go.mongodb.org/mongo-driver v1.8.3
 )
 
-require golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+require (
+	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
+	github.com/go-bongo/go-dotaccess v0.0.0-20190924013105-74ea4f4ca4eb // indirect
+	github.com/oleiade/reflections v1.0.1 // indirect
+	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+)
 
 require (
 	github.com/dghubble/oauth1 v0.7.1
@@ -19,6 +24,7 @@ require (
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/golang/snappy v0.0.1 // indirect
+	github.com/goonode/mogo v0.0.0-20181028112152-10c38e9be609
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

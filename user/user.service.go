@@ -18,6 +18,7 @@ var userCollection *mongo.Collection
 
 func init() {
 	if userCollection == nil {
+		fmt.Print("go")
 		// userCollection = utils.GetCollection("user")
 	}
 }
@@ -49,11 +50,12 @@ func kakaoAuth() Token {
 
 func GetTwitterToken(callbackURL string) (string, string) {
 	config := TwitterModule.SetTwitterConfig(callbackURL)
-	fmt.Println("load Twitter Config: ", config)
+
 	requestToken, requestSecret, err := config.RequestToken()
 	if err != nil {
-		log.Fatalln("Twitter requestToken Error: ", err)
+		log.Panic("Twitter requestToken Error: ", err)
 	}
+
 	return requestToken, requestSecret
 }
 
@@ -63,10 +65,13 @@ func TwitterAccessToken(oauth_token string, oauth_token_secret string, oauth_ver
 		secret: oauth_token_secret,
 		verifier: oauth_verifier,
 	}
+
 	accessToken, accessSecret, err := TwitterModule.Config.AccessToken(option.key, option.secret, option.verifier)
+
 	if err != nil {
 		panic("Twitter Access Token Error!")
 	}
+
 	token := TwitterModule.GetToken(accessToken, accessSecret)
 	return token
 }

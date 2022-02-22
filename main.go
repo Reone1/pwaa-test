@@ -15,10 +15,12 @@ func main (){
 	twitterRoute := r.Group("/twitter")
 	{
 		twitterRoute.GET("/request-token", func (c *gin.Context) {
-			token, secret := User.GetTwitterToken(c.Query("callback_url"))
+			
+			// token, secret := User.GetTwitterToken(c.Query("callback_url"))
+
 			c.JSON(200, gin.H{
-				"oauth_token": token,
-				"oauth_token_secret": secret,
+				"oauth_token": "token",
+				"oauth_token_secret": "secret",
 			})
 		})
 		twitterRoute.GET("/access-token", func (c *gin.Context) {

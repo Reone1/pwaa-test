@@ -1,4 +1,4 @@
-package User
+package user
 
 import (
 	"go.mongodb.org/mongo-driver/bson"
@@ -7,16 +7,16 @@ import (
 
 
 func UserController() User {
-	client, ctx, cancelContext := utils.Mongodb()
+	client, cancelContext := utils.Mongodb()
 	defer cancelContext()
 	collection := client.Database("sample-schema").Collection("user")
 	result := User{}
-	err := collection.FindOne(ctx, bson.D{}).Decode(&result)
+	err := collection.FindOne(*utils.CTX, bson.D{}).Decode(&result)
 	if err != nil{
 		panic(err)
 	}
 	defer func() {
-    if err = client.Disconnect(ctx); err != nil {
+    if err = client.Disconnect(*utils.CTX); err != nil {
         panic(err)
     }
 	}()
