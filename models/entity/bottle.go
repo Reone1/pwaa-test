@@ -1,10 +1,15 @@
 package entity
 
+import (
+	"github.com/kamva/mgm/v3"
+)
+
 type Bottle struct {
-	ID string `json:"id"`
+	mgm.DefaultModel `bson:",inline"`
 	Title string `json:"title"`
 	Description string `json:"description"`
-	Maturity_date string `json:"maturity_date"`
-	Log_list []Log `json:"log_list"`
-
+	Maturity_date string `json:"maturityDate"`
+	Log_list []Pwaa `json:"logList"`
+	UserId string `json:"userId"`
+	Total_worth int `json:"totalWorth"`
 }

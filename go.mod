@@ -9,10 +9,15 @@ require (
 )
 
 require (
+	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 // indirect
 	github.com/go-bongo/go-dotaccess v0.0.0-20190924013105-74ea4f4ca4eb // indirect
+	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/oleiade/reflections v1.0.1 // indirect
+	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/stretchr/testify v1.7.0 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
+	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect
 )
 
 require (
@@ -26,6 +31,7 @@ require (
 	github.com/golang/snappy v0.0.1 // indirect
 	github.com/goonode/mogo v0.0.0-20181028112152-10c38e9be609
 	github.com/json-iterator/go v1.1.12 // indirect
+	github.com/kamva/mgm/v3 v3.4.1
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect
 	github.com/mattn/go-isatty v0.0.14 // indirect

@@ -3,25 +3,15 @@ package db
 import (
 	"log"
 
-	"github.com/goonode/mogo"
+	"github.com/kamva/mgm/v3"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	"pwaa-test.com/utils"
 )
 
-var mongoConnection *mogo.Connection = nil
-
 //GetConnection is for get mongo connection
-func GetConnection() *mogo.Connection {
-	if mongoConnection == nil {
-		config := &mogo.Config{
-			ConnectionString: utils.DATABASE_URL,
-			Database:         utils.DATABASE_NAME,
-		}
-		mongoConnection, err := mogo.Connect(config)
-		if err != nil {
-			log.Fatal(err)
-		} else {
-			return mongoConnection
-		}
+func SetDatabase() {
+	err := mgm.SetDefaultConfig(nil, utils.DATABASE_NAME, options.Client().ApplyURI(utils.DATABASE_URL))
+	if err != nil {
+		log.Fatal(err)
 	}
-	return mongoConnection
 }

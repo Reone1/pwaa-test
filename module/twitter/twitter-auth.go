@@ -1,4 +1,4 @@
-package module
+package twitter
 
 import (
 	"github.com/dghubble/oauth1"

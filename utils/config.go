@@ -20,6 +20,7 @@ func GetENV() {
   if err != nil {
     log.Fatal("Error loading .env file")
   }
+	
 	DATABASE_NAME = os.Getenv("DATABASE_NAME")
 	DATABASE_URL = os.Getenv("DATABASE_URL")
 	TWITTER_KEY = os.Getenv("TWITTER_KEY")
