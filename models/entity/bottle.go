@@ -5,7 +5,7 @@ import (
 )
 
 type Bottle struct {
-	mgm.DefaultModel `bson:",inline"`
+	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
 	Title string `json:"title"`
 	Description string `json:"description"`
 	Maturity_date string `json:"maturityDate"`

@@ -8,5 +8,6 @@ func SetRouter() *gin.Engine{
 	if router == nil {
 		router = gin.New()
 	}
+	
 	return router
 }

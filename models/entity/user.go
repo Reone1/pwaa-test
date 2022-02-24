@@ -5,7 +5,7 @@ import (
 )
 
 type User struct {
-	mgm.DefaultModel `bson:",inline"`
+	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
 	NickName string `json:"nickName"`
 	Mail string `json:"mail"`
 	Key string `idx:"{key},unique" json:"key" binding:"required"`

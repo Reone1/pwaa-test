@@ -7,5 +7,6 @@ func init() {
 	logRouter := router.Group("/bottle")
 	{
 		logRouter.POST("/", controller.Create)
+		logRouter.GET("/", controller.GetOne)
 	}
 }
