@@ -9,7 +9,5 @@ type Bottle struct {
 	Title string `json:"title"`
 	Description string `json:"description"`
 	Maturity_date string `json:"maturityDate"`
-	Log_list []Pwaa `json:"logList"`
 	UserId string `json:"userId"`
-	Total_worth int `json:"totalWorth"`
 }

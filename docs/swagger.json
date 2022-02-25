@@ -24,11 +24,8 @@
                 "consumes": [
                     "application/json"
                 ],
-                "produces": [
-                    "application/json"
-                ],
                 "tags": [
-                    "accounts"
+                    "bottles"
                 ],
                 "summary": "Show an account",
                 "responses": {
@@ -36,6 +33,72 @@
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/entity.Bottle"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "새로운 유리병을 생성합니다.\\n 유리병의 이름을 입력할 수 있습니다. 아무값 없이 요청하면 \"default\" 이름을 갖게 됩니다.",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bottles"
+                ],
+                "summary": "Create BOTTLE by userID",
+                "parameters": [
+                    {
+                        "description": "Bottle name",
+                        "name": "name",
+                        "in": "body",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Bottle"
+                        }
+                    }
+                }
+            }
+        },
+        "/bottles": {
+            "get": {
+                "description": "GET bottle list",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bottles"
+                ],
+                "summary": "유리병 목록 조회",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.Bottle"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
                         }
                     }
                 }
@@ -49,46 +112,27 @@
                 "description": {
                     "type": "string"
                 },
-                "logList": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.Pwaa"
-                    }
-                },
                 "maturityDate": {
                     "type": "string"
                 },
                 "title": {
                     "type": "string"
                 },
-                "totalWorth": {
-                    "type": "integer"
-                },
                 "userId": {
                     "type": "string"
                 }
             }
         },
-        "entity.Pwaa": {
+        "httputil.HTTPError": {
             "type": "object",
-            "required": [
-                "bottleId",
-                "text",
-                "userId",
-                "worth"
-            ],
             "properties": {
-                "bottleId": {
-                    "type": "string"
+                "code": {
+                    "type": "integer",
+                    "example": 400
                 },
-                "text": {
-                    "type": "string"
-                },
-                "userId": {
-                    "type": "string"
-                },
-                "worth": {
-                    "type": "integer"
+                "message": {
+                    "type": "string",
+                    "example": "status bad request"
                 }
             }
         }

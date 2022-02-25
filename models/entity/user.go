@@ -6,14 +6,8 @@ import (
 
 type User struct {
 	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
-	NickName string `json:"nickName"`
+	NickName string `json:"nickname"`
 	Mail string `json:"mail"`
 	Key string `idx:"{key},unique" json:"key" binding:"required"`
-	Type string `json:"type"`
-	Bottle_list []Bottle `json:"bottleList"`
-}
-
-type Token struct {
-	Key string `json:"key"`
-	Type string `json:"type"`
+	Type string `json:"type" binding:"require"`
 }

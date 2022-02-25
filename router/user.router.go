@@ -10,18 +10,37 @@ import (
 func init() {
 	fmt.Print("User Router called")
 	controller := new(controllers.UserController)
-
+	// AuthGaurd, err := authGaurd.SetAuthGaurd()
+	// if err != nil {
+	// 	log.Panic("authgaurd Error")
+	// 	return
+	// }
 	logRouter := router.Group("/user")
+	// logRouter.Use(AuthGaurd.MiddlewareFunc())
 	{
-		logRouter.GET("/", controller.CreateOne)
-		logRouter.GET("/list", controller.GetUser)	
+		logRouter.POST("/", controller.CreateOne)
+		logRouter.GET("/", controller.GetUser)	
 	}
 	
-	answerRoute := logRouter.Group("/answer")
+	twitterRoute := logRouter.Group("/twitter")
 	{
-		answerRoute.GET("/", func (c *gin.Context) {
+		twitterRoute.GET("/access-token", func (c *gin.Context) {
 			c.JSON(200, gin.H{
-				"message":"hello",
+				"message":"t",
+			})
+		})
+		twitterRoute.GET("/", func (c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message":"token",
+			})
+		})
+	}
+
+	kakaoRoute := logRouter.Group("/kakao")
+	{
+		kakaoRoute.GET("/", func (c *gin.Context) {
+			c.JSON(200, gin.H{
+				"message": "kakao Oauth",
 			})
 		})
 	}

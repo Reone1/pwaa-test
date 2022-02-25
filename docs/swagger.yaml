@@ -4,34 +4,21 @@ definitions:
     properties:
       description:
         type: string
-      logList:
-        items:
-          $ref: '#/definitions/entity.Pwaa'
-        type: array
       maturityDate:
         type: string
       title:
         type: string
-      totalWorth:
-        type: integer
       userId:
         type: string
     type: object
-  entity.Pwaa:
+  httputil.HTTPError:
     properties:
-      bottleId:
-        type: string
-      text:
-        type: string
-      userId:
-        type: string
-      worth:
+      code:
+        example: 400
         type: integer
-    required:
-    - bottleId
-    - text
-    - userId
-    - worth
+      message:
+        example: status bad request
+        type: string
     type: object
 host: localhost:8080
 info:
@@ -52,8 +39,6 @@ paths:
       consumes:
       - application/json
       description: get string by ID
-      produces:
-      - application/json
       responses:
         "200":
           description: OK
@@ -61,7 +46,51 @@ paths:
             $ref: '#/definitions/entity.Bottle'
       summary: Show an account
       tags:
-      - accounts
+      - bottles
+    post:
+      consumes:
+      - application/json
+      description: 새로운 유리병을 생성합니다.\n 유리병의 이름을 입력할 수 있습니다. 아무값 없이 요청하면 "default" 이름을
+        갖게 됩니다.
+      parameters:
+      - description: Bottle name
+        in: body
+        name: name
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Bottle'
+      summary: Create BOTTLE by userID
+      tags:
+      - bottles
+  /bottles:
+    get:
+      consumes:
+      - application/json
+      description: GET bottle list
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.Bottle'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 유리병 목록 조회
+      tags:
+      - bottles
 securityDefinitions:
   BasicAuth:
     type: basic

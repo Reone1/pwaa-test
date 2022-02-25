@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"pwaa-test.com/docs"
@@ -28,8 +29,13 @@ import (
 func main (){
 	utils.GetENV()
 	db.SetDatabase()
-	docs.SwaggerInfo.BasePath = ""
 	r := router.SetRouter()
+	docs.SwaggerInfo.BasePath = ""
+
+	r.GET("/test",func (c *gin.Context) {
+		c.Redirect(302, "/swagger/index.html")
+	})
+	
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	
 	r.Run(":8080")
