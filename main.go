@@ -25,14 +25,16 @@ import (
 // @host      localhost:8080
 // @BasePath  /api/v1
 
-// @securityDefinitions.basic  BasicAuth
+// @securityDefinitions.apiKey ApiKeyAuth
+// @in header
+// @name Authorization
 func main (){
 	utils.GetENV()
 	db.SetDatabase()
 	r := router.SetRouter()
 	docs.SwaggerInfo.BasePath = ""
 
-	r.GET("/test",func (c *gin.Context) {
+	r.GET("/",func (c *gin.Context) {
 		c.Redirect(302, "/swagger/index.html")
 	})
 	

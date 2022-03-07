@@ -8,6 +8,6 @@ type HpLog struct {
 	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
 	Text string `json:"text" binding:"required"`
 	Worth int `json:"worth" binding:"required"`
-	UserId string `idx:"{userId},unique" json:"userId" binding:"required"`
-	BottleId string `idx:"{bottleId},unique" json:"bottleId" binding:"required"`
+	UserId string `idx:"{userId},unique" json:"userId" swaggerignore:"true"`
+	BottleId string `idx:"{bottleId},unique" json:"bottleId" swaggerignore:"true"`
 }

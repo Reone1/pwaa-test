@@ -1,12 +1,17 @@
 package router
 
-import controllers "pwaa-test.com/controller"
+import (
+	controllers "pwaa-test.com/controller"
+	authGaurd "pwaa-test.com/module/utils/auth-gaurd"
+)
 
 func init() {
 	controller := new(controllers.BottleController)
-	logRouter := router.Group("/bottle")
+	bottleRouter := router.Group("/bottle")
+	bottleRouter.Use(authGaurd.AuthMiddleware)
 	{
-		logRouter.POST("/", controller.Create)
-		logRouter.GET("/", controller.GetOne)
+		bottleRouter.POST("/", controller.Create)
+		bottleRouter.GET("/", controller.GetOne)
+		bottleRouter.GET("/list", controller.GetMany)
 	}
 }

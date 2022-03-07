@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"time"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,20 +10,20 @@ import (
 
 type BottleService struct {}
 
-func (service *BottleService) Create(title string, userId string) (string, error) {
+func (service *BottleService) Create(title string, userId string, date string) (string, error) {
 	bottle := &entity.Bottle{
 		Title: title,
 		UserId: userId,
 		Description: "default bottle description",
-		Maturity_date: time.Now().AddDate(0,0,3).UTC().String(),
+		Maturity_date: date,
 	}
 	err := mgm.Coll(bottle).Create(bottle)
 	
 	if err != nil {
-		return "", err
+		return "", nil
 	}
 
-	return bottle.ID.String(), nil
+	return bottle.ID.Hex(), nil
 }
 
 func (service *BottleService) FindOne(bottleId string) (*entity.Bottle, error) {

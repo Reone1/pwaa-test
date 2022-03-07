@@ -12,13 +12,6 @@ import (
 type HpLogService struct {}
 
 func (service *HpLogService) Create(userId, bottleId, text string, worth int) error {
-	if userId == "" {
-		userId = "62184020b83b2ef729a5a5d0"
-	} 
-	if bottleId == "" {
-		bottleId = "621893bf296ce382ff06e70a"
-	}
-	
 	hpLog := &entity.HpLog{
 		Text: text,
 		Worth: worth,
@@ -44,10 +37,10 @@ func (service *HpLogService) GetOne(hplogId string) (*entity.HpLog, error) {
 	return hpLog, nil
 }
 
-func (service *HpLogService) GetManyByBottle(bottleId string) ([]entity.HpLog, error) {
+func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.HpLog, error) {
 	result := []entity.HpLog{}
 	coll := mgm.Coll(&entity.HpLog{})
-	err := coll.SimpleFind(&result, bson.M{"bottleid": bottleId})
+	err := coll.SimpleFind(&result, bson.M{"userId": userId, "bottleid": bottleId})
 
 	if err != nil {
 		log.Panic(err)

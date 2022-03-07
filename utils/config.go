@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"log"
 	"os"
 
@@ -25,4 +26,6 @@ func GetENV() {
 	DATABASE_URL = os.Getenv("DATABASE_URL")
 	TWITTER_KEY = os.Getenv("TWITTER_KEY")
 	TWITTER_SECRET = os.Getenv("TWITTER_SECRET")
+
+	fmt.Print(DATABASE_NAME, DATABASE_URL)
 }

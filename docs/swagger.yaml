@@ -1,15 +1,93 @@
 basePath: /api/v1
 definitions:
+  controllers.CreateBottleRequestBody:
+    properties:
+      maturityDate:
+        example: date JSON string
+        type: string
+      title:
+        example: bottle title (optional)
+        type: string
+    type: object
+  controllers.CreateHplogRequestBody:
+    properties:
+      bottleId:
+        example: bottle ID
+        type: string
+      text:
+        example: each log text
+        type: string
+      worth:
+        example: 0
+        type: integer
+    type: object
+  controllers.CreateHplogResponse:
+    properties:
+      message:
+        example: ok
+        type: string
+    type: object
+  controllers.GetBottleRequestBody:
+    properties:
+      bottleId:
+        example: bottle ID
+        type: string
+    type: object
+  controllers.GetBottleResponse:
+    properties:
+      hplogList:
+        items:
+          $ref: '#/definitions/entity.HpLog'
+        type: array
+      maturityDate:
+        example: "2022-03-04T03:16:49.767Z"
+        type: string
+      title:
+        example: Bottle title
+        type: string
+      totalWorth:
+        example: 2300000
+        type: integer
+    type: object
+  controllers.GetHplistRequestBody:
+    properties:
+      bottleId:
+        example: bottle ID
+        type: string
+    type: object
+  controllers.GetHplogRequestBody:
+    properties:
+      id:
+        example: hplog ID
+        type: string
+    type: object
+  controllers.loginResponseBody:
+    properties:
+      token:
+        example: token string (JWT)
+        type: string
+    type: object
   entity.Bottle:
     properties:
       description:
+        example: ""
         type: string
       maturityDate:
+        example: ""
         type: string
       title:
+        example: default
         type: string
-      userId:
+    type: object
+  entity.HpLog:
+    properties:
+      text:
         type: string
+      worth:
+        type: integer
+    required:
+    - text
+    - worth
     type: object
   httputil.HTTPError:
     properties:
@@ -38,39 +116,46 @@ paths:
     get:
       consumes:
       - application/json
-      description: get string by ID
+      description: get string by Bottle ID
+      parameters:
+      - description: bottle's hplog list
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.GetBottleRequestBody'
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.Bottle'
-      summary: Show an account
+            $ref: '#/definitions/controllers.GetBottleResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Show an Bottle
       tags:
-      - bottles
+      - bottle
     post:
       consumes:
       - application/json
-      description: 새로운 유리병을 생성합니다.\n 유리병의 이름을 입력할 수 있습니다. 아무값 없이 요청하면 "default" 이름을
-        갖게 됩니다.
+      description: 새로운 유리병을 생성합니다. <br /> 유리병의 이름을 입력할 수 있습니다. 아무값 없이 요청하면 "default"
+        이름을 갖게 됩니다.
       parameters:
-      - description: Bottle name
+      - description: Create Bottle request body
         in: body
-        name: name
+        name: title
         schema:
-          type: string
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/entity.Bottle'
-      summary: Create BOTTLE by userID
-      tags:
-      - bottles
-  /bottles:
-    get:
-      consumes:
-      - application/json
-      description: GET bottle list
+          $ref: '#/definitions/controllers.CreateBottleRequestBody'
       responses:
         "200":
           description: OK
@@ -88,10 +173,168 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Create BOTTLE by userID
+      tags:
+      - bottle
+  /bottle/list:
+    get:
+      consumes:
+      - application/json
+      description: GET bottle list
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.Bottle'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
       summary: 유리병 목록 조회
       tags:
-      - bottles
+      - bottle
+  /hplog:
+    get:
+      consumes:
+      - application/json
+      description: 단일 기록 세부사항 조회
+      parameters:
+      - description: hplog Request Body Data
+        in: body
+        name: id
+        schema:
+          $ref: '#/definitions/controllers.GetHplogRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.HpLog'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 기록 세부사항 조회
+      tags:
+      - hplog
+    post:
+      consumes:
+      - application/json
+      description: 유리병에 단일 로그 생성
+      parameters:
+      - description: create hplog
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.CreateHplogRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.CreateHplogResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 로그 생성
+      tags:
+      - hplog
+  /hplogs:
+    get:
+      consumes:
+      - application/json
+      description: 다중기록 조회 (유리병 단위)
+      parameters:
+      - description: Bottle Id
+        in: body
+        name: id
+        schema:
+          $ref: '#/definitions/controllers.GetHplistRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.HpLog'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 기록 목록 조회
+      tags:
+      - hplog
+  /test/login:
+    post:
+      consumes:
+      - application/json
+      description: 테스트 유저 로그인
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.loginResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 테스트 유저 로그인
+      tags:
+      - test
 securityDefinitions:
-  BasicAuth:
-    type: basic
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"
