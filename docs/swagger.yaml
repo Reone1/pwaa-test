@@ -98,7 +98,7 @@ definitions:
         example: status bad request
         type: string
     type: object
-host: localhost:8080
+host: ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/
 info:
   contact:
     email: support@swagger.io
