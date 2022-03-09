@@ -2,6 +2,7 @@ package authGaurd
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"strings"
 
@@ -12,6 +13,7 @@ import (
 )
 
 func AuthMiddleware(c *gin.Context) {
+	fmt.Print(c.Request.Header["Authorization"])
 	if len(c.Request.Header["Authorization"]) == 0 {
 		httputil.NewError(c, http.StatusUnauthorized, errors.New("not 'Authorization' header"))
 		c.Abort()
