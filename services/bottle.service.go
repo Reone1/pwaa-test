@@ -2,6 +2,7 @@ package service
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -41,7 +42,7 @@ func (service *BottleService) FindOne(bottleId string) (*entity.Bottle, error) {
 func (service *BottleService) FindList(userId string) ([]entity.Bottle, error) {
 	bottles := []entity.Bottle{}
 	err := mgm.Coll(&entity.Bottle{}).SimpleFind(&bottles, bson.M{"userId": userId})
-	
+	fmt.Print(bottles)
 	if err != nil {
 		return nil, errors.New("not found USER by Id")
 	}
