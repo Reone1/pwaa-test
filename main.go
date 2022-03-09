@@ -28,23 +28,11 @@ import (
 // @securityDefinitions.apiKey ApiKeyAuth
 // @in header
 // @name Authorization
+
 func main (){
 	utils.GetENV()
 	db.SetDatabase()
 	r := router.SetRouter()
-	r.Use(func(c *gin.Context) {
-		c.Header("Access-Control-Allow-Origin", "*")
-		// c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
-		c.Header("Access-Control-Allow-Methods", "POST, OPTIONS, GET, PUT")
-
-		if c.Request.Method == "OPTIONS" {
-			c.AbortWithStatus(204)
-			return
-		}
-
-		c.Next()
-})
 	docs.SwaggerInfo.BasePath = ""
 
 	r.GET("/",func (c *gin.Context) {
