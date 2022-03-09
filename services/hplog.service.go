@@ -30,7 +30,7 @@ func (service *HpLogService) Create(userId, bottleId, text string, worth int) er
 func (service *HpLogService) GetOne(hplogId string) (*entity.HpLog, error) {
 	hpLog := &entity.HpLog{}
 	coll := mgm.Coll(hpLog)
-	err := coll.First(bson.M{"id": hplogId}, hpLog)
+	err := coll.FindByID(hplogId, hpLog)
 	if err != nil {
 		return nil, errors.New("not exist log")
 	}
@@ -40,7 +40,7 @@ func (service *HpLogService) GetOne(hplogId string) (*entity.HpLog, error) {
 func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.HpLog, error) {
 	result := []entity.HpLog{}
 	coll := mgm.Coll(&entity.HpLog{})
-	err := coll.SimpleFind(&result, bson.M{"userId": userId, "bottleid": bottleId})
+	err := coll.SimpleFind(&result, bson.M{"userid": userId, "bottleid": bottleId})
 
 	if err != nil {
 		log.Panic(err)
@@ -53,7 +53,7 @@ func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.
 func (service *HpLogService) GetManyByUser(userId string) ([]entity.HpLog, error) {
 	result := []entity.HpLog{}
 	coll := mgm.Coll(&entity.HpLog{})
-	err := coll.SimpleFind(&result, bson.M{"userId": userId} )
+	err := coll.SimpleFind(&result, bson.M{"userid": userId} )
 
 	if err != nil {
 		log.Panic(err)

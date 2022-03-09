@@ -21,7 +21,7 @@ type GetHplogRequestBody struct {
 // @Description  단일 기록 세부사항 조회
 // @Tags         hplog
 // @Accept       json 
-// @Param				 id   body GetHplogRequestBody false "hplog Request Body Data"
+// @Param				 id   query GetHplogRequestBody false "hplog Request Body Data"
 // @Success      200  {object}  entity.HpLog
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
@@ -33,12 +33,8 @@ func (control *HplogController) GetHplog(c *gin.Context) {
 		httputil.NewError(c, http.StatusUnauthorized, errors.New("not Found UserId"))
 	}
 
-	var body GetHplogRequestBody
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-	}
-
-	hplog, err :=hplogService.GetOne(body.ID)
+	ID := c.Request.URL.Query().Get("id")
+	hplog, err :=hplogService.GetOne(ID)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 	}
@@ -59,7 +55,7 @@ type CreateHplogRequestBody struct {
 // @Description  유리병에 단일 로그 생성 
 // @Tags         hplog
 // @Accept       json
-// @Param       body  body  CreateHplogRequestBody false   "create hplog"
+// @Param        body  body  CreateHplogRequestBody false   "create hplog"
 // @Success      200  {object}  CreateHplogResponse
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
@@ -99,12 +95,12 @@ type GetHplistRequestBody struct {
 // @Description  다중기록 조회 (유리병 단위)
 // @Tags         hplog
 // @Accept       json
-// @Param        id   body GetHplistRequestBody   false   "Bottle Id"
+// @Param        id   query GetHplistRequestBody  false   "Bottle Id"
 // @Success      200  {array}   entity.HpLog
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /hplogs [get]
+// @Router       /hplog/list [get]
 // @Security ApiKeyAuth
 func (control HplogController) GetHplogList(c *gin.Context) {
 	getId, ok := c.Get("userId")
@@ -113,12 +109,8 @@ func (control HplogController) GetHplogList(c *gin.Context) {
 		return	
 	}
 	userId := fmt.Sprintf("%v", getId)
-	var body GetHplistRequestBody
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return
-	}
-	hplogs, err := hplogService.GetManyByBottle(userId, body.BottleId)
+	BottleId := c.Request.URL.Query().Get("bottleId")
+	hplogs, err := hplogService.GetManyByBottle(userId, BottleId)
 	if err != nil{
 		httputil.NewError(c, http.StatusNotExtended, err)
 		return

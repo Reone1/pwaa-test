@@ -27,12 +27,6 @@ definitions:
         example: ok
         type: string
     type: object
-  controllers.GetBottleRequestBody:
-    properties:
-      bottleId:
-        example: bottle ID
-        type: string
-    type: object
   controllers.GetBottleResponse:
     properties:
       hplogList:
@@ -48,18 +42,6 @@ definitions:
       totalWorth:
         example: 2300000
         type: integer
-    type: object
-  controllers.GetHplistRequestBody:
-    properties:
-      bottleId:
-        example: bottle ID
-        type: string
-    type: object
-  controllers.GetHplogRequestBody:
-    properties:
-      id:
-        example: hplog ID
-        type: string
     type: object
   controllers.loginResponseBody:
     properties:
@@ -98,7 +80,7 @@ definitions:
         example: status bad request
         type: string
     type: object
-host: ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/
+host: localhost:8080/
 info:
   contact:
     email: support@swagger.io
@@ -118,11 +100,10 @@ paths:
       - application/json
       description: get string by Bottle ID
       parameters:
-      - description: bottle's hplog list
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/controllers.GetBottleRequestBody'
+      - example: bottle ID
+        in: query
+        name: bottleId
+        type: string
       responses:
         "200":
           description: OK
@@ -213,11 +194,10 @@ paths:
       - application/json
       description: 단일 기록 세부사항 조회
       parameters:
-      - description: hplog Request Body Data
-        in: body
+      - example: hplog ID
+        in: query
         name: id
-        schema:
-          $ref: '#/definitions/controllers.GetHplogRequestBody'
+        type: string
       responses:
         "200":
           description: OK
@@ -272,17 +252,16 @@ paths:
       summary: 로그 생성
       tags:
       - hplog
-  /hplogs:
+  /hplog/list:
     get:
       consumes:
       - application/json
       description: 다중기록 조회 (유리병 단위)
       parameters:
-      - description: Bottle Id
-        in: body
-        name: id
-        schema:
-          $ref: '#/definitions/controllers.GetHplistRequestBody'
+      - example: bottle ID
+        in: query
+        name: bottleId
+        type: string
       responses:
         "200":
           description: OK

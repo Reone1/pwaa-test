@@ -42,12 +42,10 @@ const docTemplate = `{
                 "summary": "Show an Bottle",
                 "parameters": [
                     {
-                        "description": "bottle's hplog list",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.GetBottleRequestBody"
-                        }
+                        "type": "string",
+                        "example": "bottle ID",
+                        "name": "bottleId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -192,12 +190,10 @@ const docTemplate = `{
                 "summary": "기록 세부사항 조회",
                 "parameters": [
                     {
-                        "description": "hplog Request Body Data",
+                        "type": "string",
+                        "example": "hplog ID",
                         "name": "id",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.GetHplogRequestBody"
-                        }
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -279,7 +275,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/hplogs": {
+        "/hplog/list": {
             "get": {
                 "security": [
                     {
@@ -296,12 +292,10 @@ const docTemplate = `{
                 "summary": "기록 목록 조회",
                 "parameters": [
                     {
-                        "description": "Bottle Id",
-                        "name": "id",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.GetHplistRequestBody"
-                        }
+                        "type": "string",
+                        "example": "bottle ID",
+                        "name": "bottleId",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -414,15 +408,6 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.GetBottleRequestBody": {
-            "type": "object",
-            "properties": {
-                "bottleId": {
-                    "type": "string",
-                    "example": "bottle ID"
-                }
-            }
-        },
         "controllers.GetBottleResponse": {
             "type": "object",
             "properties": {
@@ -443,24 +428,6 @@ const docTemplate = `{
                 "totalWorth": {
                     "type": "integer",
                     "example": 2300000
-                }
-            }
-        },
-        "controllers.GetHplistRequestBody": {
-            "type": "object",
-            "properties": {
-                "bottleId": {
-                    "type": "string",
-                    "example": "bottle ID"
-                }
-            }
-        },
-        "controllers.GetHplogRequestBody": {
-            "type": "object",
-            "properties": {
-                "id": {
-                    "type": "string",
-                    "example": "hplog ID"
                 }
             }
         },
@@ -531,7 +498,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/",
+	Host:             "localhost:8080/",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Example API",

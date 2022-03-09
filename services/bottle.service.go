@@ -41,7 +41,7 @@ func (service *BottleService) FindOne(bottleId string) (*entity.Bottle, error) {
 
 func (service *BottleService) FindList(userId string) ([]entity.Bottle, error) {
 	bottles := []entity.Bottle{}
-	err := mgm.Coll(&entity.Bottle{}).SimpleFind(&bottles, bson.M{"userId": userId})
+	err := mgm.Coll(&entity.Bottle{}).SimpleFind(&bottles, bson.M{"userid": userId})
 	fmt.Print(bottles)
 	if err != nil {
 		return nil, errors.New("not found USER by Id")

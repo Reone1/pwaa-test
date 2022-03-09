@@ -16,7 +16,7 @@ var bottleService = new(service.BottleService)
 
 type BottleController struct {}
 
-type GetBottleRequestBody struct {
+type GetBottleRequestQuery struct {
 	BottleId string `json:"bottleId" example:"bottle ID"`
 }
 type GetBottleResponse struct {
@@ -30,7 +30,7 @@ type GetBottleResponse struct {
 // @Description  get string by Bottle ID
 // @Tags         bottle
 // @Accept       json
-// @Param				 body body GetBottleRequestBody false "bottle's hplog list"
+// @Param				 query query GetBottleRequestQuery false "bottle's hplog list"
 // @Success      200  {object}  GetBottleResponse
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
@@ -44,14 +44,9 @@ func (b *BottleController) GetOne(c *gin.Context) {
 		return	
 	}
 	userId := fmt.Sprintf("%v", data)
-	var body GetBottleRequestBody
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return
-	}
-
+	query := c.Request.URL.Query()
 	var totalWorth int = 0
-	hplogs, err := hplogService.GetManyByBottle(userId, body.BottleId);
+	hplogs, err := hplogService.GetManyByBottle(userId, query.Get("bottleId"));
 	if  err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
@@ -59,7 +54,8 @@ func (b *BottleController) GetOne(c *gin.Context) {
 	for _, log := range hplogs {
 		totalWorth += log.Worth
 	}
-	bottle, err := bottleService.FindOne(body.BottleId)
+	bottle, err := bottleService.FindOne( query.Get("bottleId"))
+	
 	if err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
