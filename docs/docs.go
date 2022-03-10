@@ -127,6 +127,57 @@ const docTemplate = `{
                 }
             }
         },
+        "/bottle/img": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get string by Bottle ID, return bottle img uri",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bottle"
+                ],
+                "summary": "Show an Bottle img",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "bottle ID",
+                        "name": "bottleId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.GetBottleImgResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/bottle/list": {
             "get": {
                 "security": [
@@ -150,6 +201,59 @@ const docTemplate = `{
                             "items": {
                                 "$ref": "#/definitions/entity.Bottle"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bottle/status": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update bottle isOpenStatus by Bottle ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bottle"
+                ],
+                "summary": "Update an Bottle isOpen status",
+                "parameters": [
+                    {
+                        "description": "bottle Id string",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UpdateBottleStatusRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.StatusResponse"
                         }
                     },
                     "400": {
@@ -379,6 +483,9 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "bottle title (optional)"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -408,6 +515,15 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.GetBottleImgResponse": {
+            "type": "object",
+            "properties": {
+                "imgUri": {
+                    "type": "string",
+                    "example": "any.img.uri"
+                }
+            }
+        },
         "controllers.GetBottleResponse": {
             "type": "object",
             "properties": {
@@ -431,6 +547,22 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.StatusResponse": {
+            "type": "object",
+            "properties": {
+                "imgUri": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.UpdateBottleStatusRequestBody": {
+            "type": "object",
+            "properties": {
+                "bottleId": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.loginResponseBody": {
             "type": "object",
             "properties": {
@@ -447,6 +579,18 @@ const docTemplate = `{
                     "type": "string",
                     "example": ""
                 },
+                "imgUri": {
+                    "type": "string",
+                    "example": "any.img.uri"
+                },
+                "index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "isOpen": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "maturityDate": {
                     "type": "string",
                     "example": ""
@@ -454,6 +598,10 @@ const docTemplate = `{
                 "title": {
                     "type": "string",
                     "example": "default"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },
@@ -498,7 +646,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/",
+	Host:             "localhost:8080/",
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Example API",

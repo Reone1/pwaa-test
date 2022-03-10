@@ -13,5 +13,7 @@ func init() {
 		bottleRouter.POST("/", controller.Create)
 		bottleRouter.GET("/", controller.GetOne)
 		bottleRouter.GET("/list", controller.GetMany)
+		bottleRouter.GET("/img", controller.GetBottleImg)
+		bottleRouter.POST("/status", controller.UpdateBottleStatus)
 	}
 }

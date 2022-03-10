@@ -40,7 +40,7 @@ func (service *HpLogService) GetOne(hplogId string) (*entity.HpLog, error) {
 func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.HpLog, error) {
 	result := []entity.HpLog{}
 	coll := mgm.Coll(&entity.HpLog{})
-	err := coll.SimpleFind(&result, bson.M{"userid": userId, "bottleid": bottleId})
+	err := coll.SimpleFind(&result, bson.M{"userId": userId, "bottleId": bottleId})
 
 	if err != nil {
 		log.Panic(err)
@@ -53,7 +53,7 @@ func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.
 func (service *HpLogService) GetManyByUser(userId string) ([]entity.HpLog, error) {
 	result := []entity.HpLog{}
 	coll := mgm.Coll(&entity.HpLog{})
-	err := coll.SimpleFind(&result, bson.M{"userid": userId} )
+	err := coll.SimpleFind(&result, bson.M{"userId": userId} )
 
 	if err != nil {
 		log.Panic(err)

@@ -15,7 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/",
+    "host": "localhost:8080/",
     "basePath": "/api/v1",
     "paths": {
         "/bottle": {
@@ -120,6 +120,57 @@
                 }
             }
         },
+        "/bottle/img": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "get string by Bottle ID, return bottle img uri",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bottle"
+                ],
+                "summary": "Show an Bottle img",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "example": "bottle ID",
+                        "name": "bottleId",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.GetBottleImgResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/bottle/list": {
             "get": {
                 "security": [
@@ -143,6 +194,59 @@
                             "items": {
                                 "$ref": "#/definitions/entity.Bottle"
                             }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
+        "/bottle/status": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Update bottle isOpenStatus by Bottle ID",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "bottle"
+                ],
+                "summary": "Update an Bottle isOpen status",
+                "parameters": [
+                    {
+                        "description": "bottle Id string",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UpdateBottleStatusRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.StatusResponse"
                         }
                     },
                     "400": {
@@ -372,6 +476,9 @@
                 "title": {
                     "type": "string",
                     "example": "bottle title (optional)"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },
@@ -401,6 +508,15 @@
                 }
             }
         },
+        "controllers.GetBottleImgResponse": {
+            "type": "object",
+            "properties": {
+                "imgUri": {
+                    "type": "string",
+                    "example": "any.img.uri"
+                }
+            }
+        },
         "controllers.GetBottleResponse": {
             "type": "object",
             "properties": {
@@ -424,6 +540,22 @@
                 }
             }
         },
+        "controllers.StatusResponse": {
+            "type": "object",
+            "properties": {
+                "imgUri": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.UpdateBottleStatusRequestBody": {
+            "type": "object",
+            "properties": {
+                "bottleId": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.loginResponseBody": {
             "type": "object",
             "properties": {
@@ -440,6 +572,18 @@
                     "type": "string",
                     "example": ""
                 },
+                "imgUri": {
+                    "type": "string",
+                    "example": "any.img.uri"
+                },
+                "index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "isOpen": {
+                    "type": "boolean",
+                    "example": false
+                },
                 "maturityDate": {
                     "type": "string",
                     "example": ""
@@ -447,6 +591,10 @@
                 "title": {
                     "type": "string",
                     "example": "default"
+                },
+                "type": {
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },

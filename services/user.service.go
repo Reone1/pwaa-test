@@ -31,7 +31,7 @@ func (serivce *UserService) TestLogin() (string, error) {
 	jwtModule := new(jwt.Module)
 	user := &entity.User{}
 	coll := mgm.Coll(user)
-	if err :=	coll.First(bson.M{"nickname": "testing"}, user); err != nil {
+	if err :=	coll.First(bson.M{"nickName": "testing"}, user); err != nil {
 		return "", errors.New("cannot find user")
 	}
 	
@@ -46,7 +46,7 @@ func (service *UserService) Create(inputs *entity.User) error {
 	user := &entity.User{}
 	coll := mgm.Coll(user)
 
-	if err :=	coll.First(bson.M{"nickname": "testing"}, user); err == nil {
+	if err :=	coll.First(bson.M{"nickName": "testing"}, user); err == nil {
 		log.Print("user confilict")
 		return errors.New("nickname exist")
 	}

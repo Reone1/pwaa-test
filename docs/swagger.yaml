@@ -8,6 +8,8 @@ definitions:
       title:
         example: bottle title (optional)
         type: string
+      type:
+        type: string
     type: object
   controllers.CreateHplogRequestBody:
     properties:
@@ -27,6 +29,12 @@ definitions:
         example: ok
         type: string
     type: object
+  controllers.GetBottleImgResponse:
+    properties:
+      imgUri:
+        example: any.img.uri
+        type: string
+    type: object
   controllers.GetBottleResponse:
     properties:
       hplogList:
@@ -43,6 +51,16 @@ definitions:
         example: 2300000
         type: integer
     type: object
+  controllers.StatusResponse:
+    properties:
+      imgUri:
+        type: string
+    type: object
+  controllers.UpdateBottleStatusRequestBody:
+    properties:
+      bottleId:
+        type: string
+    type: object
   controllers.loginResponseBody:
     properties:
       token:
@@ -54,11 +72,23 @@ definitions:
       description:
         example: ""
         type: string
+      imgUri:
+        example: any.img.uri
+        type: string
+      index:
+        example: "1"
+        type: string
+      isOpen:
+        example: false
+        type: boolean
       maturityDate:
         example: ""
         type: string
       title:
         example: default
+        type: string
+      type:
+        example: "1"
         type: string
     type: object
   entity.HpLog:
@@ -80,7 +110,7 @@ definitions:
         example: status bad request
         type: string
     type: object
-host: ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/
+host: localhost:8080/
 info:
   contact:
     email: support@swagger.io
@@ -159,6 +189,38 @@ paths:
       summary: Create BOTTLE by userID
       tags:
       - bottle
+  /bottle/img:
+    get:
+      consumes:
+      - application/json
+      description: get string by Bottle ID, return bottle img uri
+      parameters:
+      - example: bottle ID
+        in: query
+        name: bottleId
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.GetBottleImgResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Show an Bottle img
+      tags:
+      - bottle
   /bottle/list:
     get:
       consumes:
@@ -186,6 +248,39 @@ paths:
       security:
       - ApiKeyAuth: []
       summary: 유리병 목록 조회
+      tags:
+      - bottle
+  /bottle/status:
+    post:
+      consumes:
+      - application/json
+      description: Update bottle isOpenStatus by Bottle ID
+      parameters:
+      - description: bottle Id string
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.UpdateBottleStatusRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.StatusResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Update an Bottle isOpen status
       tags:
       - bottle
   /hplog:

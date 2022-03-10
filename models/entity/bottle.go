@@ -6,12 +6,12 @@ import (
 
 type Bottle struct {
 	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
-	Title string `json:"title" example:"default" binding:"require"`
+	Title string `json:"title" bson:"title" example:"default" binding:"require"`
 	Index string `json:"index" example:"1" binding:"require"`
 	Type string `json:"type" example:"1" binding:"require"`
-	IsOpen bool `json:"isOpen" example:"false" binding:"require"`
-	ImgUri string `json:"imgUri" example:"any.img.uri" binding:"require"`
+	IsOpen bool `json:"isOpen" bson:"isOpen" example:"false" binding:"require"`
+	ImgUri string `json:"imgUri" bson:"imgUri" example:"any.img.uri" binding:"require"`
 	Description string `json:"description" example:"" binding:"require"`
-	Maturity_date string `json:"maturityDate" example:"" binding:"require"`
-	UserId string `json:"userId" example:"Object ID" swaggerignore:"true"`
+	Maturity_date string `json:"maturityDate" bson:"maturityDate" example:"" binding:"require"`
+	UserId string `json:"userId" bson:"userId" example:"Object ID" swaggerignore:"true"`
 }
