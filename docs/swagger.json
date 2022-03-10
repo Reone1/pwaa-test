@@ -15,7 +15,7 @@
         },
         "version": "1.0"
     },
-    "host": "localhost:8080/",
+    "host": "ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/",
     "basePath": "/api/v1",
     "paths": {
         "/bottle": {
