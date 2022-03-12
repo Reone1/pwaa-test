@@ -71,8 +71,7 @@ type TwitterGetAccessRequestQuery struct {
 // @Router       /twitter/requset-token [post]
 func (control *UserController) TwitterGetAccess(c *gin.Context){
 	var query = c.Request.URL.Query()
-	
-
+	fmt.Print(query.Get("callback_url"))
 	requestToken, _, err := userService.GetTwitterAuthToken(query.Get("callback_url"))
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
