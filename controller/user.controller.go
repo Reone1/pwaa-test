@@ -64,7 +64,7 @@ type TwitterGetAccessRequestBody struct {
 // @Tags         test
 // @Accept       json 
 // @Param        body body TwitterGetAccessRequestBody false "callback_url"
-// @Success      200  {object}  TwitterGetAccessRequestBody
+// @Success      200  {string}  requestToken
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
