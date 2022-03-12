@@ -470,6 +470,54 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/twitter/requset-token": {
+            "post": {
+                "description": "트위터 request Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "test"
+                ],
+                "summary": "트위터 request Token",
+                "parameters": [
+                    {
+                        "description": "callback_url",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.TwitterGetAccessRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -551,6 +599,14 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "imgUri": {
+                    "type": "string"
+                }
+            }
+        },
+        "controllers.TwitterGetAccessRequestBody": {
+            "type": "object",
+            "properties": {
+                "callback_url": {
                     "type": "string"
                 }
             }

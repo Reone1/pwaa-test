@@ -56,6 +56,11 @@ definitions:
       imgUri:
         type: string
     type: object
+  controllers.TwitterGetAccessRequestBody:
+    properties:
+      callback_url:
+        type: string
+    type: object
   controllers.UpdateBottleStatusRequestBody:
     properties:
       bottleId:
@@ -404,6 +409,37 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 테스트 유저 로그인
+      tags:
+      - test
+  /twitter/requset-token:
+    post:
+      consumes:
+      - application/json
+      description: 트위터 request Token
+      parameters:
+      - description: callback_url
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.TwitterGetAccessRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 트위터 request Token
       tags:
       - test
 securityDefinitions:

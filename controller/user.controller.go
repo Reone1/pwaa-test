@@ -68,7 +68,7 @@ type TwitterGetAccessRequestBody struct {
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /test/login [post]
+// @Router       /twitter/requset-token [post]
 func (control *UserController) TwitterGetAccess(c *gin.Context){
 	var body TwitterGetAccessRequestBody
 

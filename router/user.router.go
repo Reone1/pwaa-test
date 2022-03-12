@@ -17,13 +17,13 @@ func init() {
 		userRouter.GET("/", controller.GetUser)
 	}
 	
-	twitterRoute := userRouter.Group("/twitter")
+	twitterRoute := router.Group("/twitter")
 	{
-		twitterRoute.GET("/access-token",controller.TwitterGetAccess)
-		twitterRoute.GET("/token", controller.TwitterGetToken)
+		twitterRoute.GET("/requset-token",controller.TwitterGetAccess)
+		twitterRoute.GET("/access-token", controller.TwitterGetToken)
 	}
 
-	kakaoRoute := userRouter.Group("/kakao")
+	kakaoRoute := router.Group("/kakao")
 	{
 		kakaoRoute.GET("/", func (c *gin.Context) {
 			c.JSON(200, gin.H{
