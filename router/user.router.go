@@ -19,16 +19,8 @@ func init() {
 	
 	twitterRoute := userRouter.Group("/twitter")
 	{
-		twitterRoute.GET("/access-token", func (c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message":"t",
-			})
-		})
-		twitterRoute.GET("/", func (c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message":"token",
-			})
-		})
+		twitterRoute.GET("/access-token",controller.TwitterGetAccess)
+		twitterRoute.GET("/token", controller.TwitterGetToken)
 	}
 
 	kakaoRoute := userRouter.Group("/kakao")

@@ -43,7 +43,7 @@ type loginResponseBody struct {
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /test/login [post]
-func (contorl *UserController) TestUserLogin(c *gin.Context) {
+func (control *UserController) TestUserLogin(c *gin.Context) {
 	token, err := userService.TestLogin()
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
@@ -51,5 +51,55 @@ func (contorl *UserController) TestUserLogin(c *gin.Context) {
 	}
 	c.JSON(200, loginResponseBody{
 		Token: token,
+	})
+}
+
+type TwitterGetAccessRequestBody struct {
+	CallbackURL string `json:"callback_url"`
+}
+
+// ShowAccount godoc
+// @Summary      트위터 request Token
+// @Description  트위터 request Token
+// @Tags         test
+// @Accept       json 
+// @Param        body body TwitterGetAccessRequestBody false "callback_url"
+// @Success      200  {object}  TwitterGetAccessRequestBody
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /test/login [post]
+func (control *UserController) TwitterGetAccess(c *gin.Context){
+	var body TwitterGetAccessRequestBody
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+	}
+
+	requestToken, _, err := userService.GetTwitterAuthToken(body.CallbackURL)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+	}
+	c.JSON(200, requestToken)
+}
+type TwitterGetTokenRequestBody struct {
+	OAuthToken string `json:"oauth_token"`
+	OAuthTokenSecret string `json:"oauth_token_secret"` 
+	OAuthVerifier string `json:"oauth_verifier"` 
+	CallbackURL  string `json:"callbackURL"`
+}
+func (control *UserController) TwitterGetToken(c *gin.Context){
+	var body TwitterGetTokenRequestBody
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+	}
+
+	token, err := userService.GetTwitterAccessToken(body.OAuthToken, body.OAuthTokenSecret, body.OAuthVerifier, body.CallbackURL)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+	}
+	c.JSON(200, gin.H{
+		"token": token,
 	})
 }
