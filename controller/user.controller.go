@@ -68,7 +68,7 @@ type TwitterGetAccessRequestQuery struct {
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /twitter/requset-token [post]
+// @Router       /twitter/requset-token [get]
 func (control *UserController) TwitterGetAccess(c *gin.Context){
 	var query = c.Request.URL.Query()
 	fmt.Print(query.Get("callback_url"))
