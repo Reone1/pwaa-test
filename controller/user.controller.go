@@ -54,7 +54,7 @@ func (control *UserController) TestUserLogin(c *gin.Context) {
 	})
 }
 
-type TwitterGetAccessRequestBody struct {
+type TwitterGetAccessRequestQuery struct {
 	CallbackURL string `json:"callback_url"`
 }
 
@@ -63,20 +63,17 @@ type TwitterGetAccessRequestBody struct {
 // @Description  트위터 request Token
 // @Tags         test
 // @Accept       json 
-// @Param        body body TwitterGetAccessRequestBody false "callback_url"
+// @Param        query query TwitterGetAccessRequestQuery false "callback_url"
 // @Success      200  {string}  requestToken
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /twitter/requset-token [post]
 func (control *UserController) TwitterGetAccess(c *gin.Context){
-	var body TwitterGetAccessRequestBody
+	var query = c.Request.URL.Query()
+	
 
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-	}
-
-	requestToken, _, err := userService.GetTwitterAuthToken(body.CallbackURL)
+	requestToken, _, err := userService.GetTwitterAuthToken(query.Get("callback_url"))
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 	}

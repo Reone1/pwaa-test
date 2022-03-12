@@ -56,11 +56,6 @@ definitions:
       imgUri:
         type: string
     type: object
-  controllers.TwitterGetAccessRequestBody:
-    properties:
-      callback_url:
-        type: string
-    type: object
   controllers.UpdateBottleStatusRequestBody:
     properties:
       bottleId:
@@ -417,11 +412,9 @@ paths:
       - application/json
       description: 트위터 request Token
       parameters:
-      - description: callback_url
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/controllers.TwitterGetAccessRequestBody'
+      - in: query
+        name: callback_url
+        type: string
       responses:
         "200":
           description: OK

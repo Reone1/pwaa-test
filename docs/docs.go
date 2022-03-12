@@ -483,12 +483,9 @@ const docTemplate = `{
                 "summary": "트위터 request Token",
                 "parameters": [
                     {
-                        "description": "callback_url",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.TwitterGetAccessRequestBody"
-                        }
+                        "type": "string",
+                        "name": "callback_url",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -599,14 +596,6 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "imgUri": {
-                    "type": "string"
-                }
-            }
-        },
-        "controllers.TwitterGetAccessRequestBody": {
-            "type": "object",
-            "properties": {
-                "callback_url": {
                     "type": "string"
                 }
             }
