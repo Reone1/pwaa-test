@@ -11,9 +11,9 @@ import (
 
 type PwaaService struct {}
 
-func (service *PwaaService) Create(userId, bottleId, text string, worth int) error {
+func (service *PwaaService) Create(userId, bottleId, Content string, worth int) error {
 	pwaa := &entity.Pwaa{
-		Text: text,
+		Content: Content,
 		Worth: worth,
 		UserId: userId,
 		BottleId: bottleId,

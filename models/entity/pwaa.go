@@ -6,7 +6,7 @@ import (
 
 type Pwaa struct {
 	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
-	Text string `json:"text" binding:"required"`
+	Content string `json:"content" binding:"required"`
 	Worth int `json:"worth" binding:"required"`
 	UserId string `idx:"{userId},unique" json:"userId" bson:"userId" swaggerignore:"true"`
 	BottleId string `idx:"{bottleId},unique" json:"bottleId" bson:"bottleId" swaggerignore:"true"`
