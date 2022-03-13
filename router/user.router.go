@@ -19,8 +19,8 @@ func init() {
 	
 	twitterRoute := router.Group("/twitter")
 	{
-		twitterRoute.GET("/request-token",controller.TwitterGetAccess)
-		twitterRoute.GET("/access-token", controller.TwitterGetToken)
+		twitterRoute.GET("/request-token",controller.TwitterGetRequest)
+		twitterRoute.GET("/access-token", controller.TwitterGetAccess)
 	}
 
 	kakaoRoute := router.Group("/kakao")

@@ -277,7 +277,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/hplog": {
+        "/pwaa": {
             "get": {
                 "security": [
                     {
@@ -289,13 +289,13 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "hplog"
+                    "pwaa"
                 ],
                 "summary": "기록 세부사항 조회",
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "hplog ID",
+                        "example": "pwaa ID",
                         "name": "id",
                         "in": "query"
                     }
@@ -304,7 +304,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.HpLog"
+                            "$ref": "#/definitions/entity.Pwaa"
                         }
                     },
                     "400": {
@@ -338,16 +338,16 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "hplog"
+                    "pwaa"
                 ],
                 "summary": "로그 생성",
                 "parameters": [
                     {
-                        "description": "create hplog",
+                        "description": "create pwaa",
                         "name": "body",
                         "in": "body",
                         "schema": {
-                            "$ref": "#/definitions/controllers.CreateHplogRequestBody"
+                            "$ref": "#/definitions/controllers.CreatePwaaRequestBody"
                         }
                     }
                 ],
@@ -355,7 +355,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/controllers.CreateHplogResponse"
+                            "$ref": "#/definitions/controllers.CreatePwaaResponse"
                         }
                     },
                     "400": {
@@ -379,7 +379,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/hplog/list": {
+        "/pwaa/list": {
             "get": {
                 "security": [
                     {
@@ -391,7 +391,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "hplog"
+                    "pwaa"
                 ],
                 "summary": "기록 목록 조회",
                 "parameters": [
@@ -408,7 +408,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/entity.HpLog"
+                                "$ref": "#/definitions/entity.Pwaa"
                             }
                         }
                     },
@@ -472,7 +472,7 @@ const docTemplate = `{
             }
         },
         "/twitter/requset-token": {
-            "post": {
+            "get": {
                 "description": "트위터 request Token",
                 "consumes": [
                     "application/json"
@@ -534,14 +534,14 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.CreateHplogRequestBody": {
+        "controllers.CreatePwaaRequestBody": {
             "type": "object",
             "properties": {
                 "bottleId": {
                     "type": "string",
                     "example": "bottle ID"
                 },
-                "text": {
+                "content": {
                     "type": "string",
                     "example": "each log text"
                 },
@@ -551,7 +551,7 @@ const docTemplate = `{
                 }
             }
         },
-        "controllers.CreateHplogResponse": {
+        "controllers.CreatePwaaResponse": {
             "type": "object",
             "properties": {
                 "message": {
@@ -572,15 +572,27 @@ const docTemplate = `{
         "controllers.GetBottleResponse": {
             "type": "object",
             "properties": {
-                "hplogList": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/entity.HpLog"
-                    }
+                "imgUri": {
+                    "type": "string",
+                    "example": "uri.string.com"
+                },
+                "index": {
+                    "type": "string",
+                    "example": "1"
+                },
+                "isOpen": {
+                    "type": "boolean",
+                    "example": false
                 },
                 "maturityDate": {
                     "type": "string",
                     "example": "2022-03-04T03:16:49.767Z"
+                },
+                "pwaaList": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/entity.Pwaa"
+                    }
                 },
                 "title": {
                     "type": "string",
@@ -589,6 +601,10 @@ const docTemplate = `{
                 "totalWorth": {
                     "type": "integer",
                     "example": 2300000
+                },
+                "type": {
+                    "type": "string",
+                    "example": "1"
                 }
             }
         },
@@ -650,7 +666,7 @@ const docTemplate = `{
                 }
             }
         },
-        "entity.HpLog": {
+        "entity.Pwaa": {
             "type": "object",
             "required": [
                 "text",

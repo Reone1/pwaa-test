@@ -11,11 +11,11 @@ import (
 
 type BottleService struct {}
 
-func (service *BottleService) Create(bottleType, title, userId, date string) (string, error) {
+func (service *BottleService) Create(bottleType, title, userId, date string) (*entity.Bottle, error) {
 	bottles, err := service.FindList(userId);
 
 	if err != nil {
-		return "", err
+		return  nil, err
 	}
 	length := len(bottles)
 
@@ -30,10 +30,10 @@ func (service *BottleService) Create(bottleType, title, userId, date string) (st
 	}
 	
 	if err := mgm.Coll(bottle).Create(bottle); err != nil {
-		return "", err
+		return nil, err
 	}
 
-	return bottle.ID.Hex(), nil
+	return bottle, nil
 }
 
 func (service *BottleService) FindOne(bottleId string) (*entity.Bottle, error) {

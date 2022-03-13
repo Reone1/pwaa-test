@@ -4,7 +4,7 @@ import (
 	"github.com/kamva/mgm/v3"
 )
 
-type HpLog struct {
+type Pwaa struct {
 	mgm.DefaultModel `bson:",inline" swaggerignore:"true"`
 	Text string `json:"text" binding:"required"`
 	Worth int `json:"worth" binding:"required"`

@@ -9,16 +9,16 @@ import (
 	"pwaa-test.com/models/entity"
 )
 
-type HpLogService struct {}
+type PwaaService struct {}
 
-func (service *HpLogService) Create(userId, bottleId, text string, worth int) error {
-	hpLog := &entity.HpLog{
+func (service *PwaaService) Create(userId, bottleId, text string, worth int) error {
+	pwaa := &entity.Pwaa{
 		Text: text,
 		Worth: worth,
 		UserId: userId,
 		BottleId: bottleId,
 	}
-	err := mgm.Coll(hpLog).Create(hpLog)
+	err := mgm.Coll(pwaa).Create(pwaa)
 	if err != nil {
 		log.Panicf("create log error")
 		return err
@@ -27,19 +27,19 @@ func (service *HpLogService) Create(userId, bottleId, text string, worth int) er
 	return nil
 }
 
-func (service *HpLogService) GetOne(hplogId string) (*entity.HpLog, error) {
-	hpLog := &entity.HpLog{}
-	coll := mgm.Coll(hpLog)
-	err := coll.FindByID(hplogId, hpLog)
+func (service *PwaaService) GetOne(pwaaId string) (*entity.Pwaa, error) {
+	pwaa := &entity.Pwaa{}
+	coll := mgm.Coll(pwaa)
+	err := coll.FindByID(pwaaId, pwaa)
 	if err != nil {
 		return nil, errors.New("not exist log")
 	}
-	return hpLog, nil
+	return pwaa, nil
 }
 
-func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.HpLog, error) {
-	result := []entity.HpLog{}
-	coll := mgm.Coll(&entity.HpLog{})
+func (service *PwaaService) GetManyByBottle(userId, bottleId string) ([]entity.Pwaa, error) {
+	result := []entity.Pwaa{}
+	coll := mgm.Coll(&entity.Pwaa{})
 	err := coll.SimpleFind(&result, bson.M{"userId": userId, "bottleId": bottleId})
 
 	if err != nil {
@@ -50,9 +50,9 @@ func (service *HpLogService) GetManyByBottle(userId, bottleId string) ([]entity.
 }
 
 
-func (service *HpLogService) GetManyByUser(userId string) ([]entity.HpLog, error) {
-	result := []entity.HpLog{}
-	coll := mgm.Coll(&entity.HpLog{})
+func (service *PwaaService) GetManyByUser(userId string) ([]entity.Pwaa, error) {
+	result := []entity.Pwaa{}
+	coll := mgm.Coll(&entity.Pwaa{})
 	err := coll.SimpleFind(&result, bson.M{"userId": userId} )
 
 	if err != nil {

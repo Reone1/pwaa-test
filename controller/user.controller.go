@@ -69,7 +69,7 @@ type TwitterGetAccessRequestQuery struct {
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /twitter/requset-token [get]
-func (control *UserController) TwitterGetAccess(c *gin.Context){
+func (control *UserController) TwitterGetRequest(c *gin.Context){
 	var query = c.Request.URL.Query()
 	fmt.Print(query.Get("callback_url"))
 	requestToken, _, err := userService.GetTwitterAuthToken(query.Get("callback_url"))
@@ -84,7 +84,7 @@ type TwitterGetTokenRequestBody struct {
 	OAuthVerifier string `json:"oauth_verifier"` 
 	CallbackURL  string `json:"callbackURL"`
 }
-func (control *UserController) TwitterGetToken(c *gin.Context){
+func (control *UserController) TwitterGetAccess(c *gin.Context){
 	var body TwitterGetTokenRequestBody
 
 	if err := c.ShouldBindJSON(&body); err != nil {

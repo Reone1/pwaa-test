@@ -22,8 +22,12 @@ type GetBottleRequestQuery struct {
 type GetBottleResponse struct {
 	Title string `json:"title" example:"Bottle title"`
 	TotalWorth int `json:"totalWorth" example:"2300000"`
+	Index string `json:"index" example:"1"`
+	Type string `json:"type" example:"1"`
+	IsOpen bool `json:"isOpen" example:"false"`
+	ImgUri string `json:"imgUri" example:"uri.string.com"`
 	Maturity_date string `json:"maturityDate" example:"2022-03-04T03:16:49.767Z" binding:"require"`
-	HplogList []entity.HpLog `json:"hplogList" binding:"require"`
+	PwaaList []entity.Pwaa `json:"pwaaList" binding:"require"`
 }
 // ShowAccount godoc
 // @Summary      Show an Bottle
@@ -46,12 +50,12 @@ func (b *BottleController) GetOne(c *gin.Context) {
 	userId := fmt.Sprintf("%v", data)
 	query := c.Request.URL.Query()
 	var totalWorth int = 0
-	hplogs, err := hplogService.GetManyByBottle(userId, query.Get("bottleId"));
+	pwaas, err := PwaaService.GetManyByBottle(userId, query.Get("bottleId"));
 	if  err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
 	}
-	for _, log := range hplogs {
+	for _, log := range pwaas {
 		totalWorth += log.Worth
 	}
 	bottle, err := bottleService.FindOne( query.Get("bottleId"))
@@ -63,8 +67,12 @@ func (b *BottleController) GetOne(c *gin.Context) {
 	c.JSON(200, GetBottleResponse{
 		Title: bottle.Title,
 		TotalWorth: totalWorth,
+		Index: bottle.Index,
+		Type: bottle.Type,
+		IsOpen:bottle.IsOpen,
+		ImgUri: bottle.ImgUri,
 		Maturity_date: bottle.Maturity_date,
-		HplogList: hplogs,
+		PwaaList: pwaas,
 	})
 }
 
@@ -126,15 +134,13 @@ func (b *BottleController) Create(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	bottleId, err := bottleService.Create(body.Type, body.Title, userId, body.MaturityDate)
+	bottle, err := bottleService.Create(body.Type, body.Title, userId, body.MaturityDate)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	
-	c.JSON(200, gin.H{
-		"bottleId": bottleId,
-	})
+	c.JSON(200,bottle)
 }
 
 type GetBottleImgResponse struct {

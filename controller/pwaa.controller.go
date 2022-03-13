@@ -10,73 +10,73 @@ import (
 	service "pwaa-test.com/services"
 )
 
-var hplogService = new(service.HpLogService)
-type HplogController struct{}
+var PwaaService = new(service.PwaaService)
+type PwaaController struct{}
 
-type GetHplogRequestBody struct {
-	ID string `json:"id" example:"hplog ID"`
+type GetPwaaRequestBody struct {
+	ID string `json:"id" example:"pwaa ID"`
 }
 // ShowAccount godoc
 // @Summary      기록 세부사항 조회
 // @Description  단일 기록 세부사항 조회
-// @Tags         hplog
+// @Tags         pwaa
 // @Accept       json 
-// @Param				 id   query GetHplogRequestBody false "hplog Request Body Data"
-// @Success      200  {object}  entity.HpLog
+// @Param				 id   query GetPwaaRequestBody false "pwaa Request Body Data"
+// @Success      200  {object}  entity.Pwaa
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /hplog [get]
+// @Router       /pwaa [get]
 // @Security ApiKeyAuth
-func (control *HplogController) GetHplog(c *gin.Context) {
+func (control *PwaaController) GetPwaa(c *gin.Context) {
 	if _, ok := c.Get("userId"); !ok {
 		httputil.NewError(c, http.StatusUnauthorized, errors.New("not Found UserId"))
 	}
 
 	ID := c.Request.URL.Query().Get("id")
-	hplog, err :=hplogService.GetOne(ID)
+	pwaa, err := PwaaService.GetOne(ID)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 	}
-	c.JSON(200, hplog)
+	c.JSON(200, pwaa)
 }
 
-type CreateHplogResponse struct {
+type CreatePwaaResponse struct {
 	Message string `json:"message" example:"ok"`
 }
 
-type CreateHplogRequestBody struct {
+type CreatePwaaRequestBody struct {
 	BottleId string `json:"bottleId" example:"bottle ID"`
-	Text string `json:"text" example:"each log text"`
+	Content string `json:"content" example:"each log text"`
 	Worth int `json:"worth" example:"0"`
 }
 // ShowAccount godoc
 // @Summary      로그 생성
 // @Description  유리병에 단일 로그 생성 
-// @Tags         hplog
+// @Tags         pwaa
 // @Accept       json
-// @Param        body  body  CreateHplogRequestBody false   "create hplog"
-// @Success      200  {object}  CreateHplogResponse
+// @Param        body  body  CreatePwaaRequestBody false   "create pwaa"
+// @Success      200  {object}  CreatePwaaResponse
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /hplog [post]
+// @Router       /pwaa [post]
 // @Security ApiKeyAuth
-func (control *HplogController) CreateHplog(c *gin.Context) {
+func (control *PwaaController) CreatePwaa(c *gin.Context) {
 	getId, ok := c.Get("userId")
 	if !ok {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("not found UserId"))
 		return	
 	}
 	userId := fmt.Sprintf("%v", getId)
-	var body CreateHplogRequestBody
+	var body CreatePwaaRequestBody
 
 	if err := c.ShouldBindJSON(&body); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	if err:= hplogService.Create(userId, body.BottleId, body.Text, body.Worth); err != nil{
+	if err:= PwaaService.Create(userId, body.BottleId, body.Content, body.Worth); err != nil{
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -87,22 +87,22 @@ func (control *HplogController) CreateHplog(c *gin.Context) {
 }
 
 
-type GetHplistRequestBody struct { 
+type GetPwaasRequestBody struct { 
 	BottleId string `json:"bottleId" example:"bottle ID"`
 }
 // ShowAccount godoc
 // @Summary      기록 목록 조회
 // @Description  다중기록 조회 (유리병 단위)
-// @Tags         hplog
+// @Tags         pwaa
 // @Accept       json
-// @Param        id   query GetHplistRequestBody  false   "Bottle Id"
-// @Success      200  {array}   entity.HpLog
+// @Param        id   query GetPwaasRequestBody  false   "Bottle Id"
+// @Success      200  {array}   entity.Pwaa
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /hplog/list [get]
+// @Router       /pwaa/list [get]
 // @Security ApiKeyAuth
-func (control HplogController) GetHplogList(c *gin.Context) {
+func (control *PwaaController) GetPwaaList(c *gin.Context) {
 	getId, ok := c.Get("userId")
 	if !ok {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("not found UserId"))
@@ -110,10 +110,10 @@ func (control HplogController) GetHplogList(c *gin.Context) {
 	}
 	userId := fmt.Sprintf("%v", getId)
 	BottleId := c.Request.URL.Query().Get("bottleId")
-	hplogs, err := hplogService.GetManyByBottle(userId, BottleId)
+	pwaas, err := PwaaService.GetManyByBottle(userId, BottleId)
 	if err != nil{
 		httputil.NewError(c, http.StatusNotExtended, err)
 		return
 	}
-	c.JSON(200, hplogs)
+	c.JSON(200, pwaas)
 }

@@ -11,19 +11,19 @@ definitions:
       type:
         type: string
     type: object
-  controllers.CreateHplogRequestBody:
+  controllers.CreatePwaaRequestBody:
     properties:
       bottleId:
         example: bottle ID
         type: string
-      text:
+      content:
         example: each log text
         type: string
       worth:
         example: 0
         type: integer
     type: object
-  controllers.CreateHplogResponse:
+  controllers.CreatePwaaResponse:
     properties:
       message:
         example: ok
@@ -37,19 +37,31 @@ definitions:
     type: object
   controllers.GetBottleResponse:
     properties:
-      hplogList:
-        items:
-          $ref: '#/definitions/entity.HpLog'
-        type: array
+      imgUri:
+        example: uri.string.com
+        type: string
+      index:
+        example: "1"
+        type: string
+      isOpen:
+        example: false
+        type: boolean
       maturityDate:
         example: "2022-03-04T03:16:49.767Z"
         type: string
+      pwaaList:
+        items:
+          $ref: '#/definitions/entity.Pwaa'
+        type: array
       title:
         example: Bottle title
         type: string
       totalWorth:
         example: 2300000
         type: integer
+      type:
+        example: "1"
+        type: string
     type: object
   controllers.StatusResponse:
     properties:
@@ -91,7 +103,7 @@ definitions:
         example: "1"
         type: string
     type: object
-  entity.HpLog:
+  entity.Pwaa:
     properties:
       text:
         type: string
@@ -283,13 +295,13 @@ paths:
       summary: Update an Bottle isOpen status
       tags:
       - bottle
-  /hplog:
+  /pwaa:
     get:
       consumes:
       - application/json
       description: 단일 기록 세부사항 조회
       parameters:
-      - example: hplog ID
+      - example: pwaa ID
         in: query
         name: id
         type: string
@@ -297,7 +309,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.HpLog'
+            $ref: '#/definitions/entity.Pwaa'
         "400":
           description: Bad Request
           schema:
@@ -314,22 +326,22 @@ paths:
       - ApiKeyAuth: []
       summary: 기록 세부사항 조회
       tags:
-      - hplog
+      - pwaa
     post:
       consumes:
       - application/json
       description: 유리병에 단일 로그 생성
       parameters:
-      - description: create hplog
+      - description: create pwaa
         in: body
         name: body
         schema:
-          $ref: '#/definitions/controllers.CreateHplogRequestBody'
+          $ref: '#/definitions/controllers.CreatePwaaRequestBody'
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/controllers.CreateHplogResponse'
+            $ref: '#/definitions/controllers.CreatePwaaResponse'
         "400":
           description: Bad Request
           schema:
@@ -346,8 +358,8 @@ paths:
       - ApiKeyAuth: []
       summary: 로그 생성
       tags:
-      - hplog
-  /hplog/list:
+      - pwaa
+  /pwaa/list:
     get:
       consumes:
       - application/json
@@ -362,7 +374,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/entity.HpLog'
+              $ref: '#/definitions/entity.Pwaa'
             type: array
         "400":
           description: Bad Request
@@ -380,7 +392,7 @@ paths:
       - ApiKeyAuth: []
       summary: 기록 목록 조회
       tags:
-      - hplog
+      - pwaa
   /test/login:
     post:
       consumes:
@@ -407,7 +419,7 @@ paths:
       tags:
       - test
   /twitter/requset-token:
-    post:
+    get:
       consumes:
       - application/json
       description: 트위터 request Token
