@@ -669,11 +669,11 @@ const docTemplate = `{
         "entity.Pwaa": {
             "type": "object",
             "required": [
-                "text",
+                "content",
                 "worth"
             ],
             "properties": {
-                "text": {
+                "content": {
                     "type": "string"
                 },
                 "worth": {

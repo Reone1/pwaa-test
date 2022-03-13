@@ -105,12 +105,12 @@ definitions:
     type: object
   entity.Pwaa:
     properties:
-      text:
+      content:
         type: string
       worth:
         type: integer
     required:
-    - text
+    - content
     - worth
     type: object
   httputil.HTTPError:
