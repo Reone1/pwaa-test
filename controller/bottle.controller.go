@@ -214,6 +214,7 @@ func (b *BottleController) UpdateBottleStatus(c *gin.Context) {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
 	}
+	
 	bottle, err := bottleService.FindOne(body.BottleId)
 	if err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
