@@ -471,6 +471,66 @@ const docTemplate = `{
                 }
             }
         },
+        "/twitter/access-token": {
+            "get": {
+                "description": "트위터 access Token",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "twitter"
+                ],
+                "summary": "트위터 access Token",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "name": "callbackURL",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "oauth_token",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "oauth_token_secret",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "name": "oauth_verifier",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/twitter/requset-token": {
             "get": {
                 "description": "트위터 request Token",
@@ -478,7 +538,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "test"
+                    "twitter"
                 ],
                 "summary": "트위터 request Token",
                 "parameters": [
@@ -636,9 +696,15 @@ const docTemplate = `{
         "entity.Bottle": {
             "type": "object",
             "properties": {
+                "created_at": {
+                    "type": "string"
+                },
                 "description": {
                     "type": "string",
                     "example": ""
+                },
+                "id": {
+                    "type": "string"
                 },
                 "imgUri": {
                     "type": "string",
@@ -663,6 +729,9 @@ const docTemplate = `{
                 "type": {
                     "type": "string",
                     "example": "1"
+                },
+                "updated_at": {
+                    "type": "string"
                 }
             }
         },
@@ -673,7 +742,22 @@ const docTemplate = `{
                 "worth"
             ],
             "properties": {
+                "bottleId": {
+                    "type": "string"
+                },
                 "content": {
+                    "type": "string"
+                },
+                "created_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                },
+                "userId": {
                     "type": "string"
                 },
                 "worth": {

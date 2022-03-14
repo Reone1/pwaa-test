@@ -3,6 +3,7 @@ package service
 import (
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
@@ -11,14 +12,13 @@ import (
 
 type BottleService struct {}
 
-func (service *BottleService) Create(bottleType, title, userId, date string) (*entity.Bottle, error) {
+func (service *BottleService) Create(bottleType, title, userId string, date time.Time) (*entity.Bottle, error) {
 	bottles, err := service.FindList(userId);
 
 	if err != nil {
 		return  nil, err
 	}
 	length := len(bottles)
-
 	bottle := &entity.Bottle{
 		Title: title,
 		UserId: userId,

@@ -83,15 +83,12 @@ func (service *UserService) GetTwitterAccessToken(oauth_token , oauth_token_secr
 		CallbackURL:    callbackURL,
 		Endpoint:       twitter.AuthorizeEndpoint,
 	}
-	var option = twitterTokenOption{
-		key: oauth_token,
-		secret: oauth_token_secret,
-		verifier: oauth_verifier,
-	}
-	accessToken, accessSecret, err := config.AccessToken(option.key, option.secret, option.verifier)
+
+	accessToken, accessSecret, err := config.AccessToken(oauth_token, oauth_token_secret, oauth_verifier)
 	if err != nil {
 		return nil, err
 	}
+	
 	token := oauth1.NewToken(accessToken, accessSecret)
 	return token, nil
 }

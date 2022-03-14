@@ -61,7 +61,7 @@ type TwitterGetAccessRequestQuery struct {
 // ShowAccount godoc
 // @Summary      트위터 request Token
 // @Description  트위터 request Token
-// @Tags         test
+// @Tags         twitter
 // @Accept       json 
 // @Param        query query TwitterGetAccessRequestQuery false "callback_url"
 // @Success      200  {string}  requestToken
@@ -71,31 +71,41 @@ type TwitterGetAccessRequestQuery struct {
 // @Router       /twitter/requset-token [get]
 func (control *UserController) TwitterGetRequest(c *gin.Context){
 	var query = c.Request.URL.Query()
-	fmt.Print(query.Get("callback_url"))
-	requestToken, _, err := userService.GetTwitterAuthToken(query.Get("callback_url"))
+	requestToken, requestSecret, err := userService.GetTwitterAuthToken(query.Get("callback_url"))
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 	}
-	c.JSON(200, requestToken)
+	c.JSON(200, gin.H{
+		"oauth_token": requestToken,
+		"oauth_token_secret": requestSecret,
+	})
 }
+
 type TwitterGetTokenRequestBody struct {
 	OAuthToken string `json:"oauth_token"`
 	OAuthTokenSecret string `json:"oauth_token_secret"` 
 	OAuthVerifier string `json:"oauth_verifier"` 
 	CallbackURL  string `json:"callbackURL"`
 }
+
+// ShowAccount godoc
+// @Summary      트위터 access Token
+// @Description  트위터 access Token
+// @Tags         twitter
+// @Accept       json 
+// @Param        query query TwitterGetTokenRequestBody false "토큰이 필요합니다."
+// @Success      200  {string}  token
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /twitter/access-token [get]
 func (control *UserController) TwitterGetAccess(c *gin.Context){
-	var body TwitterGetTokenRequestBody
+	var query = c.Request.URL.Query()
 
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-	}
+	token, err := userService.GetTwitterAccessToken(query.Get("oauth_token"), query.Get("oauth_token_secret"), query.Get("oauth_verifier"), query.Get("callbackURL"))
 
-	token, err := userService.GetTwitterAccessToken(body.OAuthToken, body.OAuthTokenSecret, body.OAuthVerifier, body.CallbackURL)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 	}
-	c.JSON(200, gin.H{
-		"token": token,
-	})
+	c.JSON(200, token)
 }

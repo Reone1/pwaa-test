@@ -81,8 +81,12 @@ definitions:
     type: object
   entity.Bottle:
     properties:
+      created_at:
+        type: string
       description:
         example: ""
+        type: string
+      id:
         type: string
       imgUri:
         example: any.img.uri
@@ -102,10 +106,22 @@ definitions:
       type:
         example: "1"
         type: string
+      updated_at:
+        type: string
     type: object
   entity.Pwaa:
     properties:
+      bottleId:
+        type: string
       content:
+        type: string
+      created_at:
+        type: string
+      id:
+        type: string
+      updated_at:
+        type: string
+      userId:
         type: string
       worth:
         type: integer
@@ -418,6 +434,44 @@ paths:
       summary: 테스트 유저 로그인
       tags:
       - test
+  /twitter/access-token:
+    get:
+      consumes:
+      - application/json
+      description: 트위터 access Token
+      parameters:
+      - in: query
+        name: callbackURL
+        type: string
+      - in: query
+        name: oauth_token
+        type: string
+      - in: query
+        name: oauth_token_secret
+        type: string
+      - in: query
+        name: oauth_verifier
+        type: string
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 트위터 access Token
+      tags:
+      - twitter
   /twitter/requset-token:
     get:
       consumes:
@@ -446,7 +500,7 @@ paths:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 트위터 request Token
       tags:
-      - test
+      - twitter
 securityDefinitions:
   ApiKeyAuth:
     in: header

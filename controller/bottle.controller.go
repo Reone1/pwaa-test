@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	httputil "pwaa-test.com/module/utils"
 
@@ -26,7 +27,7 @@ type GetBottleResponse struct {
 	Type string `json:"type" example:"1"`
 	IsOpen bool `json:"isOpen" example:"false"`
 	ImgUri string `json:"imgUri" example:"uri.string.com"`
-	Maturity_date string `json:"maturityDate" example:"2022-03-04T03:16:49.767Z" binding:"require"`
+	Maturity_date time.Time `json:"maturityDate" example:"2022-03-04T03:16:49.767Z" binding:"require"`
 	PwaaList []entity.Pwaa `json:"pwaaList" binding:"require"`
 }
 // ShowAccount godoc
@@ -105,7 +106,7 @@ func (b *BottleController) GetMany(c *gin.Context) {
 type CreateBottleRequestBody struct {
 	Title string `json:"title" example:"bottle title (optional)"`
 	Type string `json:"type"`
-	MaturityDate string `json:"maturityDate" example:"date JSON string"`
+	MaturityDate time.Time `json:"maturityDate" example:"date JSON string"`
 }
 // ShowAccount godoc
 // @Summary      Create BOTTLE by userID
