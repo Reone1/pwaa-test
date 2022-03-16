@@ -32,7 +32,7 @@ func CORSMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization, Origin")
 		// c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Origin", "http://localhost:8080, http://ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080, https://ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080, https://apis.studycfaws.ml")
 		c.Header("Access-Control-Allow-Methods", "GET, DELETE, POST")
 
 		if c.Request.Method == "OPTIONS" {
