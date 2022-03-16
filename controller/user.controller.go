@@ -106,6 +106,51 @@ func (control *UserController) TwitterGetAccess(c *gin.Context){
 
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
+		return;
+	}
+	c.JSON(200, token)
+}
+
+type KakaoTokenRequestBody struct {
+	GrantType string `json:"grant_type"`
+	ClientId string `json:"client_id"`
+	RedirectUri string `json:"redirect_uri"`
+	Code string `json:"code"`
+}
+// ShowAccount godoc
+// @Summary      kakao access Token
+// @Description  kakao access Token
+// @Tags         kakao
+// @Accept       json 
+// @Param        body body KakaoTokenRequestBody false "토."
+// @Success      200  {string}  token
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /kakao/access-token [post]
+func (control *UserController) KakaoGetAccessToken(c *gin.Context){
+	var body KakaoTokenRequestBody
+
+	if err := c.ShouldBindJSON(&body) ;err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	token, err := userService.GetKakaoOauthToken(body.GrantType, body.ClientId, body.RedirectUri, body.Code)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return 
+	}
+	id, err := userService.GetKakaoUser(token)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return 
+	}
+	user, err := userService.FindKakaoUser(id)
+	
+	if err !=  nil{
+		httputil.NewError(c, http.StatusNotFound, err)
+		return 
 	}
 	c.JSON(200, token)
 }

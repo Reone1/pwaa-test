@@ -1,8 +1,12 @@
 package service
 
 import (
+	"encoding/json"
 	"errors"
+	"io/ioutil"
 	"log"
+	"net/http"
+	"net/url"
 
 	"github.com/dghubble/oauth1"
 	"github.com/dghubble/oauth1/twitter"
@@ -66,9 +70,17 @@ func (service *UserService) Create(inputs *entity.User) error {
 	return err
 }
 
-func (service *UserService) Find(id string) (*entity.User, error) {
+func (service *UserService) FindById(id string) (*entity.User, error) {
 	user := &entity.User{}
 	err := mgm.Coll(user).FindByID(id, user)
+	if err != nil {
+		return nil ,err
+	}
+	return user, nil 
+}	
+func (service *UserService) FindKakaoUser(kakaoId string) (*entity.User, error) {
+	user := &entity.User{}
+	err := mgm.Coll(user).First(bson.M{"type":"kakao", "indentity": kakaoId}, user)
 	if err != nil {
 		return nil ,err
 	}
@@ -108,3 +120,51 @@ func (service *UserService) GetTwitterAuthToken(callbackURL string) (string, str
 	}
 	return requestToken, requestSecret, nil
 } 
+
+func (service *UserService) GetKakaoOauthToken(grantType, clientId, redirectUri, code string) (string, error) {
+	res, err := http.PostForm("https://kauth.kakao.com/oauth/token", url.Values{
+		"grant_type": {grantType},
+		"client_id": {clientId},
+		"redirect_uri": {redirectUri},
+		"code": {code},
+	})
+
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+
+	respBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+	str := string(respBody)
+	return str, nil
+}
+
+
+func (service *UserService) GetKakaoUser(token string) (string, error) {
+	req, err := http.NewRequest("get","https://kapi.kakao.com/v2/user/me", nil)
+	if err != nil {
+		return "", err
+	}
+	req.Header.Add("Authorization", "bearer " + token)
+	client := &http.Client{}
+	res, err := client.Do(req)
+	if err != nil {
+		return "", err
+	}
+	defer res.Body.Close()
+
+	respBody, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		return "", err
+	}
+	var info struct {
+		Id string `json:"id"`
+	}
+	if err := json.Unmarshal(respBody, &info); err != nil {
+		return "", err
+	}
+	return info.Id, nil
+}
