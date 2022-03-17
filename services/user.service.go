@@ -19,10 +19,10 @@ import (
 
 type UserService struct {}
 
-type  twitterTokenOption struct {
-	key string
-	secret string
-	verifier string
+type  TwitterTokenOption struct {
+	Key string
+	Secret string
+	Verifier string
 }
 // 애플 토큰 발급 과정 => 로그인 타입 및 토큰
 // 트위터 토큰 발급 과정 => 로그인 타입 및 토큰
@@ -49,25 +49,23 @@ func (serivce *UserService) TestLogin() (string, error) {
 	return token, nil
 }
 
-func (service *UserService) Create(inputs *entity.User) error {
+func (service *UserService) Create(inputs *entity.User)  error {
 	user := &entity.User{}
 	coll := mgm.Coll(user)
 
-	if err :=	coll.First(bson.M{"nickName": "testing"}, user); err == nil {
+	if err :=	coll.First(bson.M{"nickName": inputs.NickName}, user); err == nil {
 		log.Print("user confilict")
 		return errors.New("nickname exist")
 	}
 
-	err := coll.Create(&entity.User{
-		Type:"kakao",
-		Key: "string",
+	if err := coll.Create(&entity.User{
+		Type:inputs.Type,
 		NickName: "testing",
 		Mail: "testing@mail",
-	})
-	if err != nil {
+	}); err != nil {
 		return errors.New("create user Error")
 	}
-	return err
+	return nil
 }
 
 func (service *UserService) FindById(id string) (*entity.User, error) {
@@ -78,9 +76,10 @@ func (service *UserService) FindById(id string) (*entity.User, error) {
 	}
 	return user, nil 
 }	
-func (service *UserService) FindKakaoUser(kakaoId string) (*entity.User, error) {
+
+func (service *UserService) FindOauthUser(UserType, kakaoId string) (*entity.User, error) {
 	user := &entity.User{}
-	err := mgm.Coll(user).First(bson.M{"type":"kakao", "indentity": kakaoId}, user)
+	err := mgm.Coll(user).First(bson.M{"type":UserType, "key": kakaoId}, user)
 	if err != nil {
 		return nil ,err
 	}
@@ -105,6 +104,7 @@ func (service *UserService) GetTwitterAccessToken(oauth_token , oauth_token_secr
 	return token, nil
 }
 
+// 트위터 accessToken 받기
 func (service *UserService) GetTwitterAuthToken(callbackURL string) (string, string, error) {
 	var config = oauth1.Config{
 		ConsumerKey:    utils.TWITTER_KEY,
@@ -121,9 +121,10 @@ func (service *UserService) GetTwitterAuthToken(callbackURL string) (string, str
 	return requestToken, requestSecret, nil
 } 
 
-func (service *UserService) GetKakaoOauthToken(grantType, clientId, redirectUri, code string) (string, error) {
+// 카카오 토큰 받기
+func (service *UserService) GetKakaoOauthToken(clientId, redirectUri, code string) (string, error) {
 	res, err := http.PostForm("https://kauth.kakao.com/oauth/token", url.Values{
-		"grant_type": {grantType},
+		"grant_type": {"authorization_code"},
 		"client_id": {clientId},
 		"redirect_uri": {redirectUri},
 		"code": {code},
@@ -142,7 +143,7 @@ func (service *UserService) GetKakaoOauthToken(grantType, clientId, redirectUri,
 	return str, nil
 }
 
-
+// 카카오 유저 찾기
 func (service *UserService) GetKakaoUser(token string) (string, error) {
 	req, err := http.NewRequest("get","https://kapi.kakao.com/v2/user/me", nil)
 	if err != nil {
@@ -167,4 +168,30 @@ func (service *UserService) GetKakaoUser(token string) (string, error) {
 		return "", err
 	}
 	return info.Id, nil
+}
+
+// 유저 토큰 받기
+func (service *UserService) GetToken(userType, identity string) (string, error) {
+	jwtModule := new(jwt.Module)
+	user := &entity.User{}
+	coll := mgm.Coll(user)
+	if err :=	coll.First(bson.M{"type": userType, "identity": identity}, user); err != nil {
+		return "", errors.New("cannot find user")
+	}
+	token, err := jwtModule.CreateToken(user.ID.Hex())
+	if err != nil {
+		return "", nil
+	}
+	return token, nil
+}
+
+
+func (service *UserService) FindBykey(key string) (*entity.User, error) {
+	user := &entity.User{}
+	coll := mgm.Coll(user)
+	if err :=	coll.First(bson.M{"key": key}, user); err != nil {
+		return nil, errors.New("cannot find user")
+	}
+	
+	return user, nil
 }

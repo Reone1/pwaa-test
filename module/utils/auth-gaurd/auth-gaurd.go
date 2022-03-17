@@ -22,7 +22,7 @@ func AuthMiddleware(c *gin.Context) {
 
 	id := jwtModule.DecodeToken(token)
 	userService := new(service.UserService)
-	user, err := userService.Find(id)
+	user, err := userService.FindById(id)
 	if err != nil {
 		httputil.NewError(c, http.StatusUnauthorized, errors.New("can found USER"))
 		c.Abort()

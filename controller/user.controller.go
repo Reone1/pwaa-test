@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"pwaa-test.com/models/entity"
 	httputil "pwaa-test.com/module/utils"
+	"pwaa-test.com/module/utils/jwt"
 	service "pwaa-test.com/services"
 )
 
@@ -20,19 +21,85 @@ func (control *UserController) GetUser(c *gin.Context) {
 	})
 }
 
+type SignInRequestBody struct {
+	NickName string `json:"nickName"`
+	Key string `json:"key"`
+	UserType string `json:"type"`
+}
+
+type SigninResponse struct {
+	Message string `json:"message"`
+}
+// ShowAccount godoc
+// @Summary      유저 닉네임 생성
+// @Description  유저 닉네임 생성
+// @Tags         user
+// @Accept       json 
+// @Param        body body SignInRequestBody false "Signin request Body"
+// @Success      200  {object}  SigninResponse
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /signin [post]
 func (control *UserController) CreateOne(c *gin.Context) {
-	if err := userService.Create(&entity.User{}); err != nil {
+	var body SignInRequestBody
+	if err := c.ShouldBindJSON(&body); err != nil{
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	
+	if err := userService.Create(&entity.User{
+		Type: body.UserType,
+		Key: body.Key,
+		NickName: body.NickName,
+		}); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	c.JSON(200,SigninResponse{
+		Message: "ok",
+	})
+}
+
+type LoginRequestBody struct {
+	Key string `json:"key" exmaple:"user key from server"`
+}
+type loginResponseBody struct {
+	Token string `json:"token" example:"token string (JWT)"`
+}
+// ShowAccount godoc
+// @Summary      로그인
+// @Description  로그인
+// @Tags         user
+// @Accept       json 
+// @Param        body body LoginRequestBody false "유저 로그인 토큰 발급"
+// @Success      200  {object}  loginResponseBody
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /user/login [post]
+func (control *UserController) Login(c *gin.Context) {
+	var body LoginRequestBody
+	if err := c.ShouldBindJSON(&body); err != nil{
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	user, err := userService.FindBykey(body.Key)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	jwtModule := new(jwt.Module)
+	token, err := jwtModule.CreateToken(user.ID.Hex())
+	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	c.JSON(200,gin.H{
-		"message": "success Create User",
+		"token": token,
 	})
 }
 
-type loginResponseBody struct {
-	Token string `json:"token" example:"token string (JWT)"`
-}
 // ShowAccount godoc
 // @Summary      테스트 유저 로그인
 // @Description  테스트 유저 로그인
@@ -61,7 +128,7 @@ type TwitterGetAccessRequestQuery struct {
 // ShowAccount godoc
 // @Summary      트위터 request Token
 // @Description  트위터 request Token
-// @Tags         twitter
+// @Tags         oauth
 // @Accept       json 
 // @Param        query query TwitterGetAccessRequestQuery false "callback_url"
 // @Success      200  {string}  requestToken
@@ -81,6 +148,8 @@ func (control *UserController) TwitterGetRequest(c *gin.Context){
 	})
 }
 
+
+
 type TwitterGetTokenRequestBody struct {
 	OAuthToken string `json:"oauth_token"`
 	OAuthTokenSecret string `json:"oauth_token_secret"` 
@@ -91,9 +160,9 @@ type TwitterGetTokenRequestBody struct {
 // ShowAccount godoc
 // @Summary      트위터 access Token
 // @Description  트위터 access Token
-// @Tags         twitter
-// @Accept       json 
-// @Param        query query TwitterGetTokenRequestBody false "토큰이 필요합니다."
+// @Tags         oauth
+// @Accept       json
+// @Param        query query TwitterGetTokenRequestBody false "twitter oauth 토큰이 필요합니다."
 // @Success      200  {string}  token
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
@@ -112,22 +181,22 @@ func (control *UserController) TwitterGetAccess(c *gin.Context){
 }
 
 type KakaoTokenRequestBody struct {
-	GrantType string `json:"grant_type"`
 	ClientId string `json:"client_id"`
 	RedirectUri string `json:"redirect_uri"`
 	Code string `json:"code"`
 }
+
 // ShowAccount godoc
 // @Summary      kakao access Token
 // @Description  kakao access Token
-// @Tags         kakao
+// @Tags         oauth
 // @Accept       json 
-// @Param        body body KakaoTokenRequestBody false "토."
-// @Success      200  {string}  token
+// @Param        body body KakaoTokenRequestBody false "kakao 로그인"
+// @Success      200  {object}  loginResponseBody
 // @Failure      400  {object}  httputil.HTTPError
-// @Failure      404  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPLoginError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /kakao/access-token [post]
+// @Router       /kakao/login [post]
 func (control *UserController) KakaoGetAccessToken(c *gin.Context){
 	var body KakaoTokenRequestBody
 
@@ -136,21 +205,78 @@ func (control *UserController) KakaoGetAccessToken(c *gin.Context){
 		return
 	}
 
-	token, err := userService.GetKakaoOauthToken(body.GrantType, body.ClientId, body.RedirectUri, body.Code)
+	kakaoToken, err := userService.GetKakaoOauthToken(body.ClientId, body.RedirectUri, body.Code)
+
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return 
 	}
-	id, err := userService.GetKakaoUser(token)
+
+	id, err := userService.GetKakaoUser(kakaoToken)
+
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return 
 	}
-	user, err := userService.FindKakaoUser(id)
-	
+
+	kakaoUser, err := userService.FindOauthUser("kakao", id)
+
 	if err !=  nil{
-		httputil.NewError(c, http.StatusNotFound, err)
+		httputil.NewLoginError(c, http.StatusNotFound, &httputil.HTTPLoginError{
+			UserType: "kakao",
+			Key: id,
+			Message: "not found user",
+		})
 		return 
 	}
-	c.JSON(200, token)
+
+	accessToken, err := userService.GetToken("kakao", kakaoUser.ID.Hex())
+
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return 
+	}
+
+	c.JSON(200, loginResponseBody{
+		Token: accessToken,
+	})
+}
+
+type AppleLoginRequestBody struct {
+	UserId string `json:"user"`
+}
+// ShowAccount godoc
+// @Summary      apple Login
+// @Description  apple Login
+// @Tags         oauth
+// @Accept       json 
+// @Param        body body AppleLoginRequestBody false "Apple 로그인"
+// @Success      200  {object}  loginResponseBody
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPLoginError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /apple/login [post]
+func (controller *UserController) AppleLogin(c *gin.Context) {
+	var body AppleLoginRequestBody
+	if err := c.ShouldBindJSON(&body); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return 
+	}
+	user, err := userService.FindOauthUser("apple", body.UserId)
+	if err !=  nil{
+		httputil.NewLoginError(c, http.StatusNotFound, &httputil.HTTPLoginError{
+			UserType: "apple",
+			Key: body.UserId,
+			Message: "not found user",
+		})
+		return 
+	}
+	token, err := new(jwt.Module).CreateToken(user.ID.Hex())
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return 
+	}
+	c.JSON(200, loginResponseBody{
+		Token: token,
+	})
 }

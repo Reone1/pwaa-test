@@ -1,5 +1,10 @@
 basePath: /api/v1
 definitions:
+  controllers.AppleLoginRequestBody:
+    properties:
+      user:
+        type: string
+    type: object
   controllers.CreateBottleRequestBody:
     properties:
       maturityDate:
@@ -61,6 +66,34 @@ definitions:
         type: integer
       type:
         example: "1"
+        type: string
+    type: object
+  controllers.KakaoTokenRequestBody:
+    properties:
+      client_id:
+        type: string
+      code:
+        type: string
+      redirect_uri:
+        type: string
+    type: object
+  controllers.LoginRequestBody:
+    properties:
+      key:
+        type: string
+    type: object
+  controllers.SignInRequestBody:
+    properties:
+      key:
+        type: string
+      nickName:
+        type: string
+      type:
+        type: string
+    type: object
+  controllers.SigninResponse:
+    properties:
+      message:
         type: string
     type: object
   controllers.StatusResponse:
@@ -138,6 +171,18 @@ definitions:
         example: status bad request
         type: string
     type: object
+  httputil.HTTPLoginError:
+    properties:
+      Key:
+        example: user Primary Id
+        type: string
+      message:
+        example: error message
+        type: string
+      type:
+        example: User type kakao, twitter, apple
+        type: string
+    type: object
 host: ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/
 info:
   contact:
@@ -152,6 +197,37 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
+  /apple/login:
+    post:
+      consumes:
+      - application/json
+      description: apple Login
+      parameters:
+      - description: Apple 로그인
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.AppleLoginRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.loginResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPLoginError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: apple Login
+      tags:
+      - oauth
   /bottle:
     get:
       consumes:
@@ -311,6 +387,37 @@ paths:
       summary: Update an Bottle isOpen status
       tags:
       - bottle
+  /kakao/login:
+    post:
+      consumes:
+      - application/json
+      description: kakao access Token
+      parameters:
+      - description: kakao 로그인
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.KakaoTokenRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.loginResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPLoginError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: kakao access Token
+      tags:
+      - oauth
   /pwaa:
     get:
       consumes:
@@ -409,6 +516,37 @@ paths:
       summary: 기록 목록 조회
       tags:
       - pwaa
+  /signin:
+    post:
+      consumes:
+      - application/json
+      description: 유저 닉네임 생성
+      parameters:
+      - description: Signin request Body
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.SignInRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.SigninResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 유저 닉네임 생성
+      tags:
+      - user
   /test/login:
     post:
       consumes:
@@ -471,7 +609,7 @@ paths:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 트위터 access Token
       tags:
-      - twitter
+      - oauth
   /twitter/requset-token:
     get:
       consumes:
@@ -500,7 +638,38 @@ paths:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 트위터 request Token
       tags:
-      - twitter
+      - oauth
+  /user/login:
+    post:
+      consumes:
+      - application/json
+      description: 로그인
+      parameters:
+      - description: 유저 로그인 토큰 발급
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.LoginRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.loginResponseBody'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: 로그인
+      tags:
+      - user
 securityDefinitions:
   ApiKeyAuth:
     in: header

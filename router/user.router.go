@@ -1,7 +1,6 @@
 package router
 
 import (
-	"github.com/gin-gonic/gin"
 	controllers "pwaa-test.com/controller"
 )
 
@@ -15,7 +14,9 @@ func init() {
 	{
 		userRouter.POST("/", controller.CreateOne)
 		userRouter.GET("/", controller.GetUser)
+		userRouter.POST("/login", controller.Login)
 	}
+
 	
 	twitterRoute := router.Group("/twitter")
 	{
@@ -25,10 +26,10 @@ func init() {
 
 	kakaoRoute := router.Group("/kakao")
 	{
-		kakaoRoute.GET("/", func (c *gin.Context) {
-			c.JSON(200, gin.H{
-				"message": "kakao Oauth",
-			})
-		})
+		kakaoRoute.GET("/login", controller.KakaoGetAccessToken)
+	}
+	apppleRouter := router.Group("/apple")
+	{
+		apppleRouter.GET("/login", controller.KakaoGetAccessToken)
 	}
 }
