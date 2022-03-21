@@ -28,8 +28,9 @@ func init() {
 	{
 		kakaoRoute.GET("/login", controller.KakaoGetAccessToken)
 	}
+
 	apppleRouter := router.Group("/apple")
 	{
-		apppleRouter.GET("/login", controller.KakaoGetAccessToken)
+		apppleRouter.GET("/login", controller.AppleLogin)
 	}
 }
