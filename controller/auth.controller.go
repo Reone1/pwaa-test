@@ -9,18 +9,11 @@ import (
 )
 
 type AuthController struct {}
-type KakaoCodeRequest struct {
-	Code string `json:"code"`
-}
 func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 	// kakao controller
 	// 1. get Code endpoint
-	var body KakaoCodeRequest
-	if err := c.ShouldBindJSON(&body); err != nil{
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return
-	}
-	token, err := userService.GetKakaoOauthToken(body.Code)
+	query := c.Request.URL.Query()
+	token, err := userService.GetKakaoOauthToken(query.Get("code"))
 	if err != nil {
 		fmt.Print(err)
 		httputil.NewError(c, http.StatusBadRequest, err)
