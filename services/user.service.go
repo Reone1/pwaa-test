@@ -125,7 +125,7 @@ func (service *UserService) GetTwitterAuthToken(callbackURL string) (string, str
 func (service *UserService) GetKakaoOauthToken(code string) (string, error) {
 	res, err := http.PostForm("https://kauth.kakao.com/oauth/token", url.Values{
 		"grant_type": {"authorization_code"},
-		"client_id": {"408e90e6248d0c9fd26825efadf4c34e"},
+		"client_id": {utils.KAKAO_CLIENT_ID},
 		"redirect_uri": {"http://ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/oauth/kakao"},
 		"code": {code},
 	})
