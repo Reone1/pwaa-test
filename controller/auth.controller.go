@@ -36,7 +36,7 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 		})
 		return
 	}
-	accessToken, err := userService.GetToken("kakao", kakaoUser.ID.Hex())
+	accessToken, err := userService.GetToken("kakao",kakaoUser.Key)
 
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
