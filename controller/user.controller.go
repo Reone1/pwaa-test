@@ -218,13 +218,12 @@ func (control *UserController) KakaoGetAccessToken(c *gin.Context){
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return 
 	}
-
-	kakaoUser, err := userService.FindOauthUser("kakao", id)
+	kakaoUser, err := userService.FindOauthUser("kakao", fmt.Sprint(id))
 
 	if err !=  nil{
 		httputil.NewLoginError(c, http.StatusNotFound, &httputil.HTTPLoginError{
 			UserType: "kakao",
-			Key: id,
+			Key: fmt.Sprint(id),
 			Message: "not found user",
 		})
 		return 

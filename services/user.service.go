@@ -3,7 +3,6 @@ package service
 import (
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -145,30 +144,30 @@ func (service *UserService) GetKakaoOauthToken(code string) (string, error) {
 }
 
 // 카카오 유저 찾기
-func (service *UserService) GetKakaoUser(token string) (string, error) {
+func (service *UserService) GetKakaoUser(token string) (int, error) {
 	req, err := http.NewRequest("GET","https://kapi.kakao.com/v2/user/me", nil)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	req.Header.Add("Authorization", "Bearer " + token)
-	fmt.Print(req)
+
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
 	defer res.Body.Close()
 
 	respBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return "", err
+		return 0, err
 	}
-	fmt.Print(string(respBody[:]))
+
 	var info struct {
-		Id string `json:"id"`
+		Id int `json:"id"`
 	}
 	if err := json.Unmarshal(respBody, &info); err != nil {
-		return "", err
+		return 0, err
 	}
 	return info.Id, nil
 }
