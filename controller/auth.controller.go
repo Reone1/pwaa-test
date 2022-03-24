@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -14,27 +14,38 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 	// kakao controller
 	// 1. get Code endpoint
 	query := c.Request.URL.Query()
+
 	token, err := userService.GetKakaoOauthToken(query.Get("code"))
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	
-	type KakaoOauthTokenResponse struct {
-		Token string `json:"access_token"`
-	}
-	res := KakaoOauthTokenResponse{}
-	if err := json.Unmarshal([]byte(token), &res); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return
-	}
-	userId, err := userService.GetKakaoUser(res.Token)
+		
+	userId, err := userService.GetKakaoUser(token)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	
+	kakaoUser, err := userService.FindOauthUser("kakao", userId)
+	if err != nil {
+		httputil.NewLoginError(c, http.StatusNotFound, &httputil.HTTPLoginError{
+			UserType: "kakao",
+			Key: fmt.Sprint(userId),
+			Message: "not found user",
+		})
+		return
+	}
+	accessToken, err := userService.GetToken("kakao", kakaoUser.ID.Hex())
 
-	c.JSON(200, gin.H{"userId": userId})
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return 
+	}
+
+	c.JSON(200, loginResponseBody{
+		Token: accessToken,
+	})
 }
 
 

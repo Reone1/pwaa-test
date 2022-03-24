@@ -78,9 +78,9 @@ func (service *UserService) FindById(id string) (*entity.User, error) {
 	return user, nil 
 }	
 
-func (service *UserService) FindOauthUser(UserType, kakaoId string) (*entity.User, error) {
+func (service *UserService) FindOauthUser(UserType, userKey string) (*entity.User, error) {
 	user := &entity.User{}
-	err := mgm.Coll(user).First(bson.M{"type":UserType, "key": kakaoId}, user)
+	err := mgm.Coll(user).First(bson.M{"type":UserType, "key": userKey}, user)
 	if err != nil {
 		return nil ,err
 	}
@@ -141,7 +141,14 @@ func (service *UserService) GetKakaoOauthToken(code string) (string, error) {
 		return "", err
 	}
 	str := string(respBody)
-	return str, nil
+	type KakaoRes struct {
+		Token string `json:"access_token"`
+	}
+	kakaoResp := KakaoRes{}
+	if err := json.Unmarshal([]byte(str), &kakaoResp);err != nil{
+		return "",err
+	}
+	return kakaoResp.Token, nil
 }
 
 // 카카오 유저 찾기
