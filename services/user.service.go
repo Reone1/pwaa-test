@@ -164,7 +164,7 @@ func (service *UserService) GetKakaoUser(token string) (string, error) {
 	var info struct {
 		Id string `json:"id"`
 	}
-	if err := json.Unmarshal(respBody, &info); err != nil {
+	if err := json.Unmarshal([]byte(respBody), &info); err != nil {
 		return "", err
 	}
 	return info.Id, nil
