@@ -26,7 +26,7 @@ func init() {
 		twitterRoute.GET("/access-token", userController.TwitterGetAccess)
 	}
 
-	authRoute := router.Group("/auth")
+	authRoute := router.Group("/oauth")
 	{
 		authRoute.GET("/kakao", authController.GetKakaoCode)
 	}
