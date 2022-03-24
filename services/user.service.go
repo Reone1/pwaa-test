@@ -185,7 +185,7 @@ func (service *UserService) GetToken(userType, identity string) (string, error) 
 	jwtModule := new(jwt.Module)
 	user := &entity.User{}
 	coll := mgm.Coll(user)
-	if err :=	coll.First(bson.M{"type": userType, "identity": identity}, user); err != nil {
+	if err :=	coll.First(bson.M{"type": userType, "_id": identity}, user); err != nil {
 		return "", errors.New("cannot find user")
 	}
 	token, err := jwtModule.CreateToken(user.ID.Hex())
