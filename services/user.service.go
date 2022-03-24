@@ -150,7 +150,7 @@ func (service *UserService) GetKakaoUser(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	req.Header.Add("Authorization", "bearer " + token)
+	req.Header.Add("Authorization", "Bearer " + token)
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
