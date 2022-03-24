@@ -162,11 +162,11 @@ func (service *UserService) GetKakaoUser(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	fmt.Print(respBody)
+	fmt.Print(string(respBody[:]))
 	var info struct {
 		Id string `json:"id"`
 	}
-	if err := json.Unmarshal([]byte(respBody), &info); err != nil {
+	if err := json.Unmarshal(respBody, &info); err != nil {
 		return "", err
 	}
 	return info.Id, nil
