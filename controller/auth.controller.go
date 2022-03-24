@@ -15,19 +15,13 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 	query := c.Request.URL.Query()
 	token, err := userService.GetKakaoOauthToken(query.Get("code"))
 	if err != nil {
-		fmt.Print(err)
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	fmt.Print(token)
 	c.JSON(200, token)
 }
-func (controller *AuthController)GetKakaoToken(c *gin.Context) {
-	// 2. get Access Token endpoint
-}
-func (controller *AuthController)GetKakaoUser(c *gin.Context) {
-  // 3. get UserData Endpoint
 
-}
 
 
 
