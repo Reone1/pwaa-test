@@ -28,8 +28,13 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	userId, err := userService.GetKakaoUser(res.Token)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
 
-	c.JSON(200, gin.H{"accessToken": res.Token})
+	c.JSON(200, gin.H{"userId": userId})
 }
 
 
