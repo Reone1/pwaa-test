@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"fmt"
+	"encoding/json"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,6 +9,7 @@ import (
 )
 
 type AuthController struct {}
+
 func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 	// kakao controller
 	// 1. get Code endpoint
@@ -18,8 +19,17 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	fmt.Print(token)
-	c.JSON(200, token)
+	
+	type KakaoOauthTokenResponse struct {
+		Token string `json:"access_token"`
+	}
+	res := KakaoOauthTokenResponse{}
+	if err := json.Unmarshal([]byte(token), &res); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+
+	c.JSON(200, gin.H{"accessToken": res.Token})
 }
 
 
