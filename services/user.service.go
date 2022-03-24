@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -144,32 +145,32 @@ func (service *UserService) GetKakaoOauthToken(code string) (string, error) {
 }
 
 // 카카오 유저 찾기
-func (service *UserService) GetKakaoUser(token string) (int, error) {
+func (service *UserService) GetKakaoUser(token string) (string, error) {
 	req, err := http.NewRequest("GET","https://kapi.kakao.com/v2/user/me", nil)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	req.Header.Add("Authorization", "Bearer " + token)
 
 	client := &http.Client{}
 	res, err := client.Do(req)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 	defer res.Body.Close()
 
 	respBody, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		return 0, err
+		return "", err
 	}
 
 	var info struct {
 		Id int `json:"id"`
 	}
 	if err := json.Unmarshal(respBody, &info); err != nil {
-		return 0, err
+		return "", err
 	}
-	return info.Id, nil
+	return fmt.Sprint(info.Id), nil
 }
 
 // 유저 토큰 받기
