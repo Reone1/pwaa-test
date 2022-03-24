@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -21,11 +22,11 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 	}
 	token, err := userService.GetKakaoOauthToken(body.Code)
 	if err != nil {
+		fmt.Print(err)
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
 	c.JSON(200, token)
-
 }
 func (controller *AuthController)GetKakaoToken(c *gin.Context) {
 	// 2. get Access Token endpoint
