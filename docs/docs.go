@@ -325,9 +325,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/kakao/login": {
-            "post": {
-                "description": "kakao access Token",
+        "/oauth/kakao": {
+            "get": {
+                "description": "kakao에서 코드를 이용해 로그인을 할 수 있도록 합니다.",
                 "consumes": [
                     "application/json"
                 ],
@@ -335,16 +335,6 @@ const docTemplate = `{
                     "oauth"
                 ],
                 "summary": "kakao access Token",
-                "parameters": [
-                    {
-                        "description": "kakao 로그인",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.KakaoTokenRequestBody"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -865,20 +855,6 @@ const docTemplate = `{
                 "type": {
                     "type": "string",
                     "example": "1"
-                }
-            }
-        },
-        "controllers.KakaoTokenRequestBody": {
-            "type": "object",
-            "properties": {
-                "client_id": {
-                    "type": "string"
-                },
-                "code": {
-                    "type": "string"
-                },
-                "redirect_uri": {
-                    "type": "string"
                 }
             }
         },

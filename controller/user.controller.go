@@ -188,15 +188,14 @@ type KakaoTokenRequestBody struct {
 
 // ShowAccount godoc
 // @Summary      kakao access Token
-// @Description  kakao access Token
+// @Description  kakao에서 코드를 이용해 로그인을 할 수 있도록 합니다.
 // @Tags         oauth
 // @Accept       json 
-// @Param        body body KakaoTokenRequestBody false "kakao 로그인"
 // @Success      200  {object}  loginResponseBody
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPLoginError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       /kakao/login [post]
+// @Router       /oauth/kakao [get]
 func (control *UserController) KakaoGetAccessToken(c *gin.Context){
 	var body KakaoTokenRequestBody
 

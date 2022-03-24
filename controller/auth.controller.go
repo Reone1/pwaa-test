@@ -10,6 +10,16 @@ import (
 
 type AuthController struct {}
 
+// ShowAccount godoc
+// @Summary      kakao access Token
+// @Description  kakao에서 코드를 이용해 로그인을 할 수 있도록 합니다.
+// @Tags         oauth
+// @Accept       json 
+// @Success      200  {object}  loginResponseBody
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPLoginError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /oauth/kakao [get]
 func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 	// kakao controller
 	// 1. get Code endpoint
@@ -47,10 +57,6 @@ func (controller *AuthController) GetKakaoCode(c *gin.Context) {
 		Token: accessToken,
 	})
 }
-
-
-
-
 
 // twitter Controller
 // 1. get Code endpoint

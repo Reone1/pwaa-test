@@ -68,15 +68,6 @@ definitions:
         example: "1"
         type: string
     type: object
-  controllers.KakaoTokenRequestBody:
-    properties:
-      client_id:
-        type: string
-      code:
-        type: string
-      redirect_uri:
-        type: string
-    type: object
   controllers.LoginRequestBody:
     properties:
       key:
@@ -387,17 +378,11 @@ paths:
       summary: Update an Bottle isOpen status
       tags:
       - bottle
-  /kakao/login:
-    post:
+  /oauth/kakao:
+    get:
       consumes:
       - application/json
-      description: kakao access Token
-      parameters:
-      - description: kakao 로그인
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/controllers.KakaoTokenRequestBody'
+      description: kakao에서 코드를 이용해 로그인을 할 수 있도록 합니다.
       responses:
         "200":
           description: OK
