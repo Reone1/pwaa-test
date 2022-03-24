@@ -146,7 +146,7 @@ func (service *UserService) GetKakaoOauthToken(code string) (string, error) {
 
 // 카카오 유저 찾기
 func (service *UserService) GetKakaoUser(token string) (string, error) {
-	req, err := http.NewRequest("get","https://kapi.kakao.com/v2/user/me", nil)
+	req, err := http.NewRequest("GET","https://kapi.kakao.com/v2/user/me", nil)
 	if err != nil {
 		return "", err
 	}
