@@ -5,32 +5,34 @@ import (
 )
 
 func init() {
-	controller := new(controllers.UserController)
+	userController := new(controllers.UserController)
+	authController := new(controllers.AuthController)
+
 	testRouter := router.Group("/test")
 	{
-		testRouter.POST("/login", controller.TestUserLogin)
+		testRouter.POST("/login", userController.TestUserLogin)
 	}
 	userRouter := router.Group("/user")
 	{
-		userRouter.POST("/", controller.CreateOne)
-		userRouter.GET("/", controller.GetUser)
-		userRouter.POST("/login", controller.Login)
+		userRouter.POST("/", userController.CreateOne)
+		userRouter.GET("/", userController.GetUser)
+		userRouter.POST("/login", userController.Login)
 	}
 
 	
 	twitterRoute := router.Group("/twitter")
 	{
-		twitterRoute.GET("/request-token",controller.TwitterGetRequest)
-		twitterRoute.GET("/access-token", controller.TwitterGetAccess)
+		twitterRoute.GET("/request-token",userController.TwitterGetRequest)
+		twitterRoute.GET("/access-token", userController.TwitterGetAccess)
 	}
 
-	kakaoRoute := router.Group("/kakao")
+	authRoute := router.Group("/auth")
 	{
-		kakaoRoute.GET("/login", controller.KakaoGetAccessToken)
+		authRoute.GET("/kakao", authController.GetKakaoCode)
 	}
 
 	apppleRouter := router.Group("/apple")
 	{
-		apppleRouter.GET("/login", controller.AppleLogin)
+		apppleRouter.GET("/login", userController.AppleLogin)
 	}
 }

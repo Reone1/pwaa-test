@@ -205,7 +205,7 @@ func (control *UserController) KakaoGetAccessToken(c *gin.Context){
 		return
 	}
 
-	kakaoToken, err := userService.GetKakaoOauthToken(body.ClientId, body.RedirectUri, body.Code)
+	kakaoToken, err := userService.GetKakaoOauthToken(body.Code)
 
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)

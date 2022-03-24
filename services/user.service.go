@@ -122,11 +122,11 @@ func (service *UserService) GetTwitterAuthToken(callbackURL string) (string, str
 } 
 
 // 카카오 토큰 받기
-func (service *UserService) GetKakaoOauthToken(clientId, redirectUri, code string) (string, error) {
+func (service *UserService) GetKakaoOauthToken(code string) (string, error) {
 	res, err := http.PostForm("https://kauth.kakao.com/oauth/token", url.Values{
 		"grant_type": {"authorization_code"},
-		"client_id": {clientId},
-		"redirect_uri": {redirectUri},
+		"client_id": {"408e90e6248d0c9fd26825efadf4c34e"},
+		"redirect_uri": {"http://ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/oauth/kakao"},
 		"code": {code},
 	})
 
