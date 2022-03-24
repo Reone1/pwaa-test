@@ -3,6 +3,7 @@ package service
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -161,6 +162,7 @@ func (service *UserService) GetKakaoUser(token string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+	fmt.Print(respBody)
 	var info struct {
 		Id string `json:"id"`
 	}
