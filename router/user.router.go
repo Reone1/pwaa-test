@@ -33,6 +33,6 @@ func init() {
 
 	apppleRouter := router.Group("/apple")
 	{
-		apppleRouter.GET("/login", userController.AppleLogin)
+		apppleRouter.POST("/login", userController.AppleLogin)
 	}
 }
