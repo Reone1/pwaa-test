@@ -250,8 +250,9 @@ type AppleLoginRequestBody struct {
 // @Accept       json 
 // @Param        body body AppleLoginRequestBody false "Apple 로그인"
 // @Success      200  {object}  loginResponseBody
-// @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPLoginError
+// @Success      202  {object}  loginResponseBody
+// @Failure      400  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /apple/login [post]
 func (controller *UserController) AppleLogin(c *gin.Context) {
@@ -262,10 +263,10 @@ func (controller *UserController) AppleLogin(c *gin.Context) {
 	}
 	user, err := userService.FindOauthUser("apple", body.UserId)
 	if err !=  nil{
-		httputil.NewLoginError(c, http.StatusNotFound, &httputil.HTTPLoginError{
-			UserType: "apple",
-			Key: body.UserId,
-			Message: "not found user",
+		c.JSON(202, gin.H{
+			"userType": "apple",
+			"key": body.UserId,
+			"message": "not found user",
 		})
 		return 
 	}
