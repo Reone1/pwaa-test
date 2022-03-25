@@ -16,7 +16,7 @@ func init() {
 	userRouter := router.Group("/user")
 	{
 		userRouter.POST("/signin", userController.CreateOne)
-		userRouter.GET("/", userController.GetUser).Use(authGaurd.AuthMiddleware)
+		userRouter.GET("/", authGaurd.AuthMiddleware, userController.GetUser)
 		userRouter.POST("/login", userController.Login)
 	}
 
