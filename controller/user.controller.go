@@ -16,10 +16,18 @@ var userService = new(service.UserService)
 type UserController struct {}
 
 func (control *UserController) GetUser(c *gin.Context) {
-	fmt.Print("getUser controller called")
-	c.JSON(200, gin.H{
-		"message": c.Request.URL,
-	})
+	data, ok := c.Get("userId")
+	if !ok {
+		httputil.NewError(c, http.StatusBadRequest, errors.New("not authorized"))
+		return	
+	}
+	userId := fmt.Sprintf("%v", data)
+	user, err := userService.FindById(userId)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return	
+	}
+	c.JSON(200, user)
 }
 
 type SignInRequestBody struct {
