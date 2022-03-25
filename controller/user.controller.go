@@ -30,6 +30,7 @@ type SignInRequestBody struct {
 
 type SigninResponse struct {
 	Token string `json:"token"`
+	NickName string `json:"nickName"`
 }
 // ShowAccount godoc
 // @Summary      유저 닉네임 생성
@@ -69,6 +70,7 @@ func (control *UserController) CreateOne(c *gin.Context) {
 	}
 	c.JSON(200,SigninResponse{
 		Token: token,
+		NickName: user.NickName,
 	})
 }
 
