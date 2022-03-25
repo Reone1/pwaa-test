@@ -52,6 +52,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controllers.loginResponseBody"
                         }
                     },
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.loginResponseBody"
+                        }
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -710,6 +716,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/user": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "유저 정보 조회",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "유저 정보 조회",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/user/login": {
             "post": {
                 "description": "로그인",
@@ -883,7 +932,10 @@ const docTemplate = `{
         "controllers.SigninResponse": {
             "type": "object",
             "properties": {
-                "message": {
+                "nickName": {
+                    "type": "string"
+                },
+                "token": {
                     "type": "string"
                 }
             }
@@ -982,6 +1034,20 @@ const docTemplate = `{
                 },
                 "worth": {
                     "type": "integer"
+                }
+            }
+        },
+        "entity.User": {
+            "type": "object",
+            "properties": {
+                "mail": {
+                    "type": "string"
+                },
+                "nickName": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
                 }
             }
         },

@@ -14,7 +14,17 @@ import (
 
 var userService = new(service.UserService)
 type UserController struct {}
-
+// ShowAccount godoc
+// @Summary      유저 정보 조회
+// @Description  유저 정보 조회
+// @Tags         user
+// @Accept       json 
+// @Success      200  {object}  entity.User
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /user [get]
+// @Security ApiKeyAuth
 func (control *UserController) GetUser(c *gin.Context) {
 	data, ok := c.Get("userId")
 	if !ok {
