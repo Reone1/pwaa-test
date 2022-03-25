@@ -2,6 +2,7 @@ package router
 
 import (
 	controllers "pwaa-test.com/controller"
+	authGaurd "pwaa-test.com/module/utils/auth-gaurd"
 )
 
 func init() {
@@ -15,7 +16,7 @@ func init() {
 	userRouter := router.Group("/user")
 	{
 		userRouter.POST("/signin", userController.CreateOne)
-		userRouter.GET("/", userController.GetUser)
+		userRouter.GET("/", userController.GetUser).Use(authGaurd.AuthMiddleware)
 		userRouter.POST("/login", userController.Login)
 	}
 
