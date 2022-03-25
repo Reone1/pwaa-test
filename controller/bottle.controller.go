@@ -76,12 +76,15 @@ func (b *BottleController) GetOne(c *gin.Context) {
 		PwaaList: pwaas,
 	})
 }
-
+type GetBottlesRequestQuery struct {
+	IsOpen bool `json:"isOpen"`
+}
 // ShowAccount godoc
 // @Summary      유리병 목록 조회
 // @Description  GET bottle list
 // @Tags         bottle
 // @Accept       json
+// @Param				 query query GetBottlesRequestQuery false "bottle's hplog list"
 // @Success      200  {array}  entity.Bottle
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
@@ -94,8 +97,10 @@ func (b *BottleController) GetMany(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("not authorized"))
 		return	
 	}
+	query := c.Request.URL.Query()
+	isOpenQuery := query.Get("isOpen")
 	userId := fmt.Sprintf("%v", data)
-	bottles, err := bottleService.FindList(userId)
+	bottles, err := bottleService.FindList(userId, isOpenQuery)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return	

@@ -13,7 +13,7 @@ import (
 type BottleService struct {}
 
 func (service *BottleService) Create(bottleType, title, userId string, date time.Time) (*entity.Bottle, error) {
-	bottles, err := service.FindList(userId);
+	bottles, err := service.FindList(userId, "");
 
 	if err != nil {
 		return  nil, err
@@ -48,9 +48,18 @@ func (service *BottleService) FindOne(bottleId string) (*entity.Bottle, error) {
 	return bottle, nil
 }
 
-func (service *BottleService) FindList(userId string) ([]entity.Bottle, error) {
+func (service *BottleService) FindList(userId , isOpen string) ([]entity.Bottle, error) {
 	bottles := []entity.Bottle{}
-	err := mgm.Coll(&entity.Bottle{}).SimpleFind(&bottles, bson.M{"userId": userId})
+	var err error
+	if isOpen == "" {
+		err = mgm.Coll(&entity.Bottle{}).SimpleFind(&bottles, bson.M{"userId": userId})
+	} else {
+		openStatus := false
+		if isOpen == "true" {
+			openStatus = true;
+		}
+		err = mgm.Coll(&entity.Bottle{}).SimpleFind(&bottles, bson.M{"userId": userId, "isOpen": openStatus})
+	}
 	
 	if err != nil {
 		return nil, errors.New("not found USER by Id")
