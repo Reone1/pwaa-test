@@ -61,8 +61,8 @@ func (service *UserService) Create(inputs *entity.User)  error {
 
 	if err := coll.Create(&entity.User{
 		Type:inputs.Type,
-		NickName: "testing",
-		Mail: "testing@mail",
+		NickName: inputs.NickName,
+		Key: inputs.Key ,
 	}); err != nil {
 		return errors.New("create user Error")
 	}

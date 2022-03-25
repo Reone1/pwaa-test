@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -28,7 +29,7 @@ type SignInRequestBody struct {
 }
 
 type SigninResponse struct {
-	Message string `json:"message"`
+	Token string `json:"token"`
 }
 // ShowAccount godoc
 // @Summary      유저 닉네임 생성
@@ -56,8 +57,18 @@ func (control *UserController) CreateOne(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
+	user, err := userService.FindBykey(body.Key)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, errors.New("create user Error"))
+		return
+	}
+	token, err := new(jwt.Module).CreateToken(user.ID.Hex())
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, errors.New("token Error"))
+		return
+	}
 	c.JSON(200,SigninResponse{
-		Message: "ok",
+		Token: token,
 	})
 }
 

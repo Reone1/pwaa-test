@@ -14,7 +14,7 @@ func init() {
 	}
 	userRouter := router.Group("/user")
 	{
-		userRouter.POST("/", userController.CreateOne)
+		userRouter.POST("/signin", userController.CreateOne)
 		userRouter.GET("/", userController.GetUser)
 		userRouter.POST("/login", userController.Login)
 	}
