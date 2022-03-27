@@ -25,60 +25,6 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/apple/login": {
-            "post": {
-                "description": "apple Login",
-                "consumes": [
-                    "application/json"
-                ],
-                "tags": [
-                    "oauth"
-                ],
-                "summary": "apple Login",
-                "parameters": [
-                    {
-                        "description": "Apple 로그인",
-                        "name": "body",
-                        "in": "body",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.AppleLoginRequestBody"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.loginResponseBody"
-                        }
-                    },
-                    "202": {
-                        "description": "Accepted",
-                        "schema": {
-                            "$ref": "#/definitions/controllers.loginResponseBody"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPLoginError"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/httputil.HTTPError"
-                        }
-                    }
-                }
-            }
-        },
         "/bottle": {
             "get": {
                 "security": [
@@ -239,7 +185,7 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "GET bottle list",
+                "description": "GET bottle list \"isOpen\"을 query param으로 받아서 만기처리한 유리병을 선택하여 받을 수 있습니다.",
                 "consumes": [
                     "application/json"
                 ],
@@ -247,6 +193,13 @@ const docTemplate = `{
                     "bottle"
                 ],
                 "summary": "유리병 목록 조회",
+                "parameters": [
+                    {
+                        "type": "boolean",
+                        "name": "isOpen",
+                        "in": "query"
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -331,6 +284,60 @@ const docTemplate = `{
                 }
             }
         },
+        "/oauth/apple/login": {
+            "post": {
+                "description": "apple Login",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "oauth"
+                ],
+                "summary": "apple Login",
+                "parameters": [
+                    {
+                        "description": "Apple 로그인",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.AppleLoginRequestBody"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.loginResponseBody"
+                        }
+                    },
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.OAuthNotFoundUser"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/oauth/kakao": {
             "get": {
                 "description": "kakao에서 코드를 이용해 로그인을 할 수 있도록 합니다.",
@@ -348,6 +355,12 @@ const docTemplate = `{
                             "$ref": "#/definitions/controllers.loginResponseBody"
                         }
                     },
+                    "202": {
+                        "description": "Accepted",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.OAuthNotFoundUser"
+                        }
+                    },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
@@ -357,7 +370,7 @@ const docTemplate = `{
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/httputil.HTTPLoginError"
+                            "$ref": "#/definitions/httputil.HTTPError"
                         }
                     },
                     "500": {
@@ -915,6 +928,20 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.OAuthNotFoundUser": {
+            "type": "object",
+            "properties": {
+                "key": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "type": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.SignInRequestBody": {
             "type": "object",
             "properties": {
@@ -1061,23 +1088,6 @@ const docTemplate = `{
                 "message": {
                     "type": "string",
                     "example": "status bad request"
-                }
-            }
-        },
-        "httputil.HTTPLoginError": {
-            "type": "object",
-            "properties": {
-                "Key": {
-                    "type": "string",
-                    "example": "user Primary Id"
-                },
-                "message": {
-                    "type": "string",
-                    "example": "error message"
-                },
-                "type": {
-                    "type": "string",
-                    "example": "User type kakao, twitter, apple"
                 }
             }
         }

@@ -73,6 +73,15 @@ definitions:
       key:
         type: string
     type: object
+  controllers.OAuthNotFoundUser:
+    properties:
+      key:
+        type: string
+      message:
+        type: string
+      type:
+        type: string
+    type: object
   controllers.SignInRequestBody:
     properties:
       key:
@@ -173,18 +182,6 @@ definitions:
         example: status bad request
         type: string
     type: object
-  httputil.HTTPLoginError:
-    properties:
-      Key:
-        example: user Primary Id
-        type: string
-      message:
-        example: error message
-        type: string
-      type:
-        example: User type kakao, twitter, apple
-        type: string
-    type: object
 host: ec2-3-34-137-70.ap-northeast-2.compute.amazonaws.com:8080/
 info:
   contact:
@@ -199,41 +196,6 @@ info:
   title: Swagger Example API
   version: "1.0"
 paths:
-  /apple/login:
-    post:
-      consumes:
-      - application/json
-      description: apple Login
-      parameters:
-      - description: Apple 로그인
-        in: body
-        name: body
-        schema:
-          $ref: '#/definitions/controllers.AppleLoginRequestBody'
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/controllers.loginResponseBody'
-        "202":
-          description: Accepted
-          schema:
-            $ref: '#/definitions/controllers.loginResponseBody'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-        "404":
-          description: Not Found
-          schema:
-            $ref: '#/definitions/httputil.HTTPLoginError'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/httputil.HTTPError'
-      summary: apple Login
-      tags:
-      - oauth
   /bottle:
     get:
       consumes:
@@ -335,7 +297,12 @@ paths:
     get:
       consumes:
       - application/json
-      description: GET bottle list
+      description: GET bottle list "isOpen"을 query param으로 받아서 만기처리한 유리병을 선택하여 받을
+        수 있습니다.
+      parameters:
+      - in: query
+        name: isOpen
+        type: boolean
       responses:
         "200":
           description: OK
@@ -393,6 +360,41 @@ paths:
       summary: Update an Bottle isOpen status
       tags:
       - bottle
+  /oauth/apple/login:
+    post:
+      consumes:
+      - application/json
+      description: apple Login
+      parameters:
+      - description: Apple 로그인
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.AppleLoginRequestBody'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.loginResponseBody'
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.OAuthNotFoundUser'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      summary: apple Login
+      tags:
+      - oauth
   /oauth/kakao:
     get:
       consumes:
@@ -403,6 +405,10 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/controllers.loginResponseBody'
+        "202":
+          description: Accepted
+          schema:
+            $ref: '#/definitions/controllers.OAuthNotFoundUser'
         "400":
           description: Bad Request
           schema:
@@ -410,7 +416,7 @@ paths:
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/httputil.HTTPLoginError'
+            $ref: '#/definitions/httputil.HTTPError'
         "500":
           description: Internal Server Error
           schema:

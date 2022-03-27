@@ -82,7 +82,7 @@ func (control *PwaaController) CreatePwaa(c *gin.Context) {
 	}
 	
  	c.JSON(200, gin.H{
-		"message": "create Log",
+		"message": "ok",
 	})
 }
 

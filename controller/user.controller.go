@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+	"github.com/kamva/mgm/v3"
 	"pwaa-test.com/models/entity"
 	httputil "pwaa-test.com/module/utils"
 	"pwaa-test.com/module/utils/jwt"
@@ -37,7 +38,13 @@ func (control *UserController) GetUser(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return	
 	}
-	c.JSON(200, user)
+	c.JSON(200, entity.User{
+		NickName: user.NickName,
+		Type: user.Type,
+		DefaultModel: mgm.DefaultModel{
+			DateFields: user.DateFields,
+		},
+	})
 }
 
 type SignInRequestBody struct {
@@ -76,7 +83,7 @@ func (control *UserController) CreateOne(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	user, err := userService.FindBykey(body.Key)
+	user, err := userService.FindBykey(body.UserType, body.Key)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("create user Error"))
 		return
@@ -115,7 +122,7 @@ func (control *UserController) Login(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	user, err := userService.FindBykey(body.Key)
+	user, err := userService.FindBykey("normal", body.Key)
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
@@ -142,169 +149,16 @@ func (control *UserController) Login(c *gin.Context) {
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /test/login [post]
 func (control *UserController) TestUserLogin(c *gin.Context) {
-	token, err := userService.TestLogin()
+	user, err := userService.FindByNickName("test")
 	if err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	c.JSON(200, loginResponseBody{
-		Token: token,
-	})
-}
-
-type TwitterGetAccessRequestQuery struct {
-	CallbackURL string `json:"callback_url"`
-}
-
-// ShowAccount godoc
-// @Summary      트위터 request Token
-// @Description  트위터 request Token
-// @Tags         oauth
-// @Accept       json 
-// @Param        query query TwitterGetAccessRequestQuery false "callback_url"
-// @Success      200  {string}  requestToken
-// @Failure      400  {object}  httputil.HTTPError
-// @Failure      404  {object}  httputil.HTTPError
-// @Failure      500  {object}  httputil.HTTPError
-// @Router       /twitter/requset-token [get]
-func (control *UserController) TwitterGetRequest(c *gin.Context){
-	var query = c.Request.URL.Query()
-	requestToken, requestSecret, err := userService.GetTwitterAuthToken(query.Get("callback_url"))
+	jwtModule := new(jwt.Module)
+	token, err := jwtModule.CreateToken(user.ID.Hex())
 	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-	}
-	c.JSON(200, gin.H{
-		"oauth_token": requestToken,
-		"oauth_token_secret": requestSecret,
-	})
-}
-
-
-
-type TwitterGetTokenRequestBody struct {
-	OAuthToken string `json:"oauth_token"`
-	OAuthTokenSecret string `json:"oauth_token_secret"` 
-	OAuthVerifier string `json:"oauth_verifier"` 
-	CallbackURL  string `json:"callbackURL"`
-}
-
-// ShowAccount godoc
-// @Summary      트위터 access Token
-// @Description  트위터 access Token
-// @Tags         oauth
-// @Accept       json
-// @Param        query query TwitterGetTokenRequestBody false "twitter oauth 토큰이 필요합니다."
-// @Success      200  {string}  token
-// @Failure      400  {object}  httputil.HTTPError
-// @Failure      404  {object}  httputil.HTTPError
-// @Failure      500  {object}  httputil.HTTPError
-// @Router       /twitter/access-token [get]
-func (control *UserController) TwitterGetAccess(c *gin.Context){
-	var query = c.Request.URL.Query()
-
-	token, err := userService.GetTwitterAccessToken(query.Get("oauth_token"), query.Get("oauth_token_secret"), query.Get("oauth_verifier"), query.Get("callbackURL"))
-
-	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return;
-	}
-	c.JSON(200, token)
-}
-
-type KakaoTokenRequestBody struct {
-	ClientId string `json:"client_id"`
-	RedirectUri string `json:"redirect_uri"`
-	Code string `json:"code"`
-}
-
-// ShowAccount godoc
-// @Summary      kakao access Token
-// @Description  kakao에서 코드를 이용해 로그인을 할 수 있도록 합니다.
-// @Tags         oauth
-// @Accept       json 
-// @Success      200  {object}  loginResponseBody
-// @Failure      400  {object}  httputil.HTTPError
-// @Failure      404  {object}  httputil.HTTPLoginError
-// @Failure      500  {object}  httputil.HTTPError
-// @Router       /oauth/kakao [get]
-func (control *UserController) KakaoGetAccessToken(c *gin.Context){
-	var body KakaoTokenRequestBody
-
-	if err := c.ShouldBindJSON(&body) ;err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
-	}
-
-	kakaoToken, err := userService.GetKakaoOauthToken(body.Code)
-
-	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return 
-	}
-
-	id, err := userService.GetKakaoUser(kakaoToken)
-
-	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return 
-	}
-	kakaoUser, err := userService.FindOauthUser("kakao", fmt.Sprint(id))
-
-	if err !=  nil{
-		httputil.NewLoginError(c, http.StatusNotFound, &httputil.HTTPLoginError{
-			UserType: "kakao",
-			Key: fmt.Sprint(id),
-			Message: "not found user",
-		})
-		return 
-	}
-
-	accessToken, err := userService.GetToken("kakao", kakaoUser.ID.Hex())
-
-	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return 
-	}
-
-	c.JSON(200, loginResponseBody{
-		Token: accessToken,
-	})
-}
-
-type AppleLoginRequestBody struct {
-	UserId string `json:"user"`
-}
-// ShowAccount godoc
-// @Summary      apple Login
-// @Description  apple Login
-// @Tags         oauth
-// @Accept       json 
-// @Param        body body AppleLoginRequestBody false "Apple 로그인"
-// @Success      200  {object}  loginResponseBody
-// @Failure      404  {object}  httputil.HTTPLoginError
-// @Success      202  {object}  loginResponseBody
-// @Failure      400  {object}  httputil.HTTPError
-// @Failure      500  {object}  httputil.HTTPError
-// @Router       /apple/login [post]
-func (controller *UserController) AppleLogin(c *gin.Context) {
-	var body AppleLoginRequestBody
-	if err := c.ShouldBindJSON(&body); err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return 
-	}
-	user, err := userService.FindOauthUser("apple", body.UserId)
-	if err !=  nil{
-		c.JSON(202, gin.H{
-			"userType": "apple",
-			"key": body.UserId,
-			"message": "not found user",
-		})
-		return 
-	}
-	token, err := new(jwt.Module).CreateToken(user.ID.Hex())
-	if err != nil {
-		httputil.NewError(c, http.StatusBadRequest, err)
-		return 
 	}
 	c.JSON(200, loginResponseBody{
 		Token: token,

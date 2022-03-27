@@ -16,7 +16,7 @@ func init() {
 	userRouter := router.Group("/user")
 	{
 		userRouter.POST("/signin", userController.CreateOne)
-		userRouter.GET("/", authGaurd.AuthMiddleware, userController.GetUser)
+		userRouter.GET("/", authGaurd.AuthMiddleware,userController.GetUser)
 		userRouter.POST("/login", userController.Login)
 	}
 
@@ -27,13 +27,15 @@ func init() {
 		twitterRoute.GET("/access-token", userController.TwitterGetAccess)
 	}
 
-	authRoute := router.Group("/oauth")
+	oauthRoute := router.Group("/oauth")
 	{
-		authRoute.GET("/kakao", authController.GetKakaoCode)
-	}
-
-	apppleRouter := router.Group("/apple")
-	{
-		apppleRouter.POST("/login", userController.AppleLogin)
+		kakaoRoute := oauthRoute.Group("/kakao")
+		{
+			kakaoRoute.GET("/", authController.GetKakaoCode)
+		}
+		apppleRouter := oauthRoute.Group("/apple")
+		{
+			apppleRouter.POST("/login", authController.AppleLogin)
+		}
 	}
 }

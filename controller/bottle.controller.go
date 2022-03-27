@@ -81,7 +81,7 @@ type GetBottlesRequestQuery struct {
 }
 // ShowAccount godoc
 // @Summary      유리병 목록 조회
-// @Description  GET bottle list
+// @Description  GET bottle list "isOpen"을 query param으로 받아서 만기처리한 유리병을 선택하여 받을 수 있습니다.
 // @Tags         bottle
 // @Accept       json
 // @Param				 query query GetBottlesRequestQuery false "bottle's hplog list"
