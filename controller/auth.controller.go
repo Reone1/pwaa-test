@@ -10,6 +10,7 @@ package controllers
 // 2. get
 
 import (
+	"errors"
 	"fmt"
 	"net/http"
 
@@ -38,8 +39,6 @@ type OAuthNotFoundUser struct{
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /oauth/kakao [get]
 func (controller *AuthController) GetKakaoCode(c *gin.Context) {
-	// kakao controller
-	// 1. get Code endpoint
 	query := c.Request.URL.Query()
 
 	token, err := OAuthService.GetKakaoOauthToken(query.Get("code"))
@@ -170,5 +169,37 @@ func (control *UserController) TwitterGetAccess(c *gin.Context){
 	}
 	c.JSON(200, gin.H{
 		"token": token,
+	})
+}
+
+type OAuthUserDeleteRes struct {
+	Message string `json:"message"`
+}
+// ShowAccount godoc
+// @Summary      Oauth user signOut
+// @Description  OAuth user Signout (for test)
+// @Tags         test
+// @Accept       json
+// @Success      200  {object}  OAuthUserDeleteRes
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       test/oauth/signout [put]
+// @Security ApiKeyAuth
+func (control *UserController) OAuthSignOut(c *gin.Context) {
+	data, ok := c.Get("userId")
+	if !ok {
+		httputil.NewError(c, http.StatusUnauthorized, errors.New("not exist Token"))
+		return	
+	}
+	userId := fmt.Sprintf("%v", data)
+	
+	if err := userService.Delete(userId); err != nil {
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return	
+	}
+
+	c.JSON(201, OAuthUserDeleteRes{
+		Message: "Oauth User signOut (Delete User)",
 	})
 }

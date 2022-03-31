@@ -11,12 +11,13 @@ func init() {
 
 	testRouter := router.Group("/test")
 	{
+		testRouter.PUT("/oauth/signout", authGaurd.AuthMiddleware, userController.OAuthSignOut)
 		testRouter.POST("/login", userController.TestUserLogin)
 	}
 	userRouter := router.Group("/user")
 	{
 		userRouter.POST("/signin", userController.CreateOne)
-		userRouter.GET("/", authGaurd.AuthMiddleware,userController.GetUser)
+		userRouter.GET("/", authGaurd.AuthMiddleware, userController.GetUser)
 		userRouter.POST("/login", userController.Login)
 	}
 

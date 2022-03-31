@@ -51,6 +51,7 @@ type SignInRequestBody struct {
 	NickName string `json:"nickName"`
 	Key string `json:"key"`
 	UserType string `json:"type"`
+	Privacy bool `json:"privacyPolicyConsent"`
 }
 
 type SigninResponse struct {
@@ -74,11 +75,12 @@ func (control *UserController) CreateOne(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	
+
 	if err := userService.Create(&entity.User{
 		Type: body.UserType,
 		Key: body.Key,
 		NickName: body.NickName,
+		Privacy: body.Privacy,
 		}); err != nil {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
@@ -98,6 +100,42 @@ func (control *UserController) CreateOne(c *gin.Context) {
 		NickName: user.NickName,
 	})
 }
+type UpdateUserPrivacy  struct {
+	Privacy bool `json:"privacyPolicyConsent"`
+}
+// ShowAccount godoc
+// @Summary      유저 privacy 정보 업데이트
+// @Description  유저 privacy 정보 업데이트
+// @Tags         user
+// @Accept       json 
+// @Param        body body UpdateUserPrivacy false "privacy update request Body"
+// @Success      200  {object}  entity.User
+// @Failure      400  {object}  httputil.HTTPError
+// @Failure      404  {object}  httputil.HTTPError
+// @Failure      500  {object}  httputil.HTTPError
+// @Router       /user/privacy [put]
+// @Security ApiKeyAuth
+
+func (control *UserController) UpdateUserPrivacy(c *gin.Context) {
+	data, ok := c.Get("userId")
+	if !ok {
+		httputil.NewError(c, http.StatusUnauthorized, errors.New("not authorized"))
+		return	
+	}
+	userId := fmt.Sprintf("%v", data)
+	var body UpdateUserPrivacy
+	if err := c.ShouldBindJSON(&body); err != nil{
+		httputil.NewError(c, http.StatusBadRequest, err)
+		return
+	}
+	user ,err := userService.UpdatePrivacy(userId, body.Privacy)
+	if err != nil {
+		httputil.NewError(c, http.StatusBadRequest, errors.New("DATABASE update Error"))
+		return
+	}
+	c.JSON(203,user)
+}
+
 
 type LoginRequestBody struct {
 	Key string `json:"key" exmaple:"user key from server"`
@@ -133,8 +171,8 @@ func (control *UserController) Login(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return
 	}
-	c.JSON(200,gin.H{
-		"token": token,
+	c.JSON(200,loginResponseBody{
+		Token: token,
 	})
 }
 

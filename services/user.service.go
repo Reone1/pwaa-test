@@ -76,3 +76,30 @@ func (serivce *UserService) FindByNickName( nickName string ) (*entity.User, err
 	
 	return user, nil
 }
+
+func (service *UserService) UpdatePrivacy(userId string, privacy bool) (*entity.User, error) {
+	user := &entity.User{}
+	coll := mgm.Coll(user)
+	if err :=	coll.FindByID(userId, user); err != nil {
+		return nil, errors.New("cannot find user")
+	}
+
+	user.Privacy = privacy
+	
+	if err :=	coll.Update(user); err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
+func (service *UserService) Delete(userId string) error {
+	user := &entity.User{}
+	coll := mgm.Coll(user)
+	if err :=	coll.FindByID(userId, user); err != nil {
+		return err
+	}
+	if err :=	coll.Delete(user); err != nil {
+		return err
+	}
+	return nil
+}

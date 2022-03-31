@@ -18,6 +18,10 @@ func AuthMiddleware(c *gin.Context) {
 	}
 	jwtModule := new(jwt.Module)
 	auth := c.Request.Header["Authorization"][0]
+	if len(auth) == 0 {
+		httputil.NewError(c, http.StatusUnauthorized, errors.New("not 'Authorization' header"))
+		c.Abort()
+	}
 	token := strings.Split(auth, " ")[1]
 
 	id := jwtModule.DecodeToken(token)
