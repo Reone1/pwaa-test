@@ -4,11 +4,6 @@ package controllers
 // 1. get Code endpoint
 // 2. get accessToken endpoint
 // 3. get userData endpoint
-
-// apple controller
-// 1. get User id endpoint
-// 2. get
-
 import (
 	"errors"
 	"fmt"
@@ -21,6 +16,7 @@ import (
 )
 var OAuthService = new(service.OAuthService)
 type AuthController struct {}
+
 type OAuthNotFoundUser struct{
 	Key string `json:"key"`
 	UserType string `json:"type"`
@@ -184,7 +180,7 @@ type OAuthUserDeleteRes struct {
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
-// @Router       test/oauth/signout [put]
+// @Router       /test/oauth/signout [put]
 // @Security ApiKeyAuth
 func (control *UserController) OAuthSignOut(c *gin.Context) {
 	data, ok := c.Get("userId")

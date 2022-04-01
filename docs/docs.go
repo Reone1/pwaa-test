@@ -624,6 +624,49 @@ const docTemplate = `{
                 }
             }
         },
+        "/test/oauth/signout": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "OAuth user Signout (for test)",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "test"
+                ],
+                "summary": "Oauth user signOut",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.OAuthUserDeleteRes"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
+        },
         "/twitter/access-token": {
             "get": {
                 "description": "트위터 access Token",
@@ -819,6 +862,59 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/user/privacy": {
+            "put": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "유저 privacy 정보 업데이트",
+                "consumes": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": "유저 privacy 정보 업데이트",
+                "parameters": [
+                    {
+                        "description": "privacy update request Body",
+                        "name": "body",
+                        "in": "body",
+                        "schema": {
+                            "$ref": "#/definitions/controllers.UpdateUserPrivacy"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/entity.User"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/httputil.HTTPError"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -942,6 +1038,14 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.OAuthUserDeleteRes": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.SignInRequestBody": {
             "type": "object",
             "properties": {
@@ -950,6 +1054,9 @@ const docTemplate = `{
                 },
                 "nickName": {
                     "type": "string"
+                },
+                "privacyPolicyConsent": {
+                    "type": "boolean"
                 },
                 "type": {
                     "type": "string"
@@ -980,6 +1087,14 @@ const docTemplate = `{
             "properties": {
                 "bottleId": {
                     "type": "string"
+                }
+            }
+        },
+        "controllers.UpdateUserPrivacy": {
+            "type": "object",
+            "properties": {
+                "privacyPolicyConsent": {
+                    "type": "boolean"
                 }
             }
         },
@@ -1067,11 +1182,11 @@ const docTemplate = `{
         "entity.User": {
             "type": "object",
             "properties": {
-                "mail": {
-                    "type": "string"
-                },
                 "nickName": {
                     "type": "string"
+                },
+                "privacyPolicyConsent": {
+                    "type": "boolean"
                 },
                 "type": {
                     "type": "string"
@@ -1081,6 +1196,7 @@ const docTemplate = `{
         "httputil.HTTPError": {
             "type": "object",
             "properties": {
+                "body": {},
                 "code": {
                     "type": "integer",
                     "example": 400

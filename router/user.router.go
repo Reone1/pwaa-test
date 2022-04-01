@@ -18,6 +18,7 @@ func init() {
 	{
 		userRouter.POST("/signin", userController.CreateOne)
 		userRouter.GET("/", authGaurd.AuthMiddleware, userController.GetUser)
+		userRouter.PUT("/privacy", authGaurd.AuthMiddleware, userController.UpdateUserPrivacy)
 		userRouter.POST("/login", userController.Login)
 	}
 

@@ -115,7 +115,6 @@ type UpdateUserPrivacy  struct {
 // @Failure      500  {object}  httputil.HTTPError
 // @Router       /user/privacy [put]
 // @Security ApiKeyAuth
-
 func (control *UserController) UpdateUserPrivacy(c *gin.Context) {
 	data, ok := c.Get("userId")
 	if !ok {

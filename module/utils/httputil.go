@@ -15,6 +15,6 @@ func NewError(c *gin.Context, status int, err error) {
 type HTTPError struct {
 	Code    int    `json:"code" example:"400"`
 	Message string `json:"message" example:"status bad request"`
-	Body interface {} `json:"body" example:"Server Error Body"`
+	Body interface {} `json:"body"`
 }
 

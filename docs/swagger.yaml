@@ -82,12 +82,19 @@ definitions:
       type:
         type: string
     type: object
+  controllers.OAuthUserDeleteRes:
+    properties:
+      message:
+        type: string
+    type: object
   controllers.SignInRequestBody:
     properties:
       key:
         type: string
       nickName:
         type: string
+      privacyPolicyConsent:
+        type: boolean
       type:
         type: string
     type: object
@@ -107,6 +114,11 @@ definitions:
     properties:
       bottleId:
         type: string
+    type: object
+  controllers.UpdateUserPrivacy:
+    properties:
+      privacyPolicyConsent:
+        type: boolean
     type: object
   controllers.loginResponseBody:
     properties:
@@ -166,15 +178,16 @@ definitions:
     type: object
   entity.User:
     properties:
-      mail:
-        type: string
       nickName:
         type: string
+      privacyPolicyConsent:
+        type: boolean
       type:
         type: string
     type: object
   httputil.HTTPError:
     properties:
+      body: {}
       code:
         example: 400
         type: integer
@@ -578,6 +591,33 @@ paths:
       summary: 테스트 유저 로그인
       tags:
       - test
+  /test/oauth/signout:
+    put:
+      consumes:
+      - application/json
+      description: OAuth user Signout (for test)
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/controllers.OAuthUserDeleteRes'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: Oauth user signOut
+      tags:
+      - test
   /twitter/access-token:
     get:
       consumes:
@@ -701,6 +741,39 @@ paths:
           schema:
             $ref: '#/definitions/httputil.HTTPError'
       summary: 로그인
+      tags:
+      - user
+  /user/privacy:
+    put:
+      consumes:
+      - application/json
+      description: 유저 privacy 정보 업데이트
+      parameters:
+      - description: privacy update request Body
+        in: body
+        name: body
+        schema:
+          $ref: '#/definitions/controllers.UpdateUserPrivacy'
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.User'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/httputil.HTTPError'
+      security:
+      - ApiKeyAuth: []
+      summary: 유저 privacy 정보 업데이트
       tags:
       - user
 securityDefinitions:
