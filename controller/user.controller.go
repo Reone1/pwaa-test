@@ -4,9 +4,9 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/kamva/mgm/v3"
 	"pwaa-test.com/models/entity"
 	httputil "pwaa-test.com/module/utils"
 	"pwaa-test.com/module/utils/jwt"
@@ -15,12 +15,20 @@ import (
 
 var userService = new(service.UserService)
 type UserController struct {}
+
+type UserRes struct {
+	UserType string `json:"type"`
+	NickName string `json:"nickName"`
+	Privacy bool `json:"privacyPolicyConsent"`
+	CreatedAt time.Time `json:"create_at"` 
+	UpdatedAt time.Time `json:"update_at"` 
+}
 // ShowAccount godoc
 // @Summary      유저 정보 조회
 // @Description  유저 정보 조회
 // @Tags         user
 // @Accept       json 
-// @Success      200  {object}  entity.User
+// @Success      200  {object}  UserRes
 // @Failure      400  {object}  httputil.HTTPError
 // @Failure      404  {object}  httputil.HTTPError
 // @Failure      500  {object}  httputil.HTTPError
@@ -38,12 +46,12 @@ func (control *UserController) GetUser(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, err)
 		return	
 	}
-	c.JSON(200, entity.User{
+	c.JSON(200, UserRes{
 		NickName: user.NickName,
-		Type: user.Type,
-		DefaultModel: mgm.DefaultModel{
-			DateFields: user.DateFields,
-		},
+		UserType: user.Type,
+		CreatedAt: user.DateFields.CreatedAt,
+		UpdatedAt: user.DateFields.UpdatedAt,
+		Privacy: user.Privacy,
 	})
 }
 
@@ -132,7 +140,13 @@ func (control *UserController) UpdateUserPrivacy(c *gin.Context) {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("DATABASE update Error"))
 		return
 	}
-	c.JSON(203,user)
+	c.JSON(203,UserRes{
+		NickName: user.NickName,
+		UserType: user.Type,
+		Privacy: user.Privacy,
+		CreatedAt: user.DefaultModel.CreatedAt,
+		UpdatedAt: user.DefaultModel.UpdatedAt,
+	})
 }
 
 

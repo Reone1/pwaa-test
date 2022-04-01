@@ -791,7 +791,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/controllers.UserRes"
                         }
                     },
                     "400": {
@@ -1098,6 +1098,26 @@ const docTemplate = `{
                 }
             }
         },
+        "controllers.UserRes": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "nickName": {
+                    "type": "string"
+                },
+                "privacyPolicyConsent": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "update_at": {
+                    "type": "string"
+                }
+            }
+        },
         "controllers.loginResponseBody": {
             "type": "object",
             "properties": {
@@ -1224,7 +1244,7 @@ var SwaggerInfo = &swag.Spec{
 	BasePath:         "/api/v1",
 	Schemes:          []string{},
 	Title:            "Swagger Example API",
-	Description:      "This is a sample server celler server.",
+	Description:      "pwaa 백엔드 REST API swagger.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 }

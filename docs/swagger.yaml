@@ -120,6 +120,19 @@ definitions:
       privacyPolicyConsent:
         type: boolean
     type: object
+  controllers.UserRes:
+    properties:
+      create_at:
+        type: string
+      nickName:
+        type: string
+      privacyPolicyConsent:
+        type: boolean
+      type:
+        type: string
+      update_at:
+        type: string
+    type: object
   controllers.loginResponseBody:
     properties:
       token:
@@ -201,7 +214,7 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: This is a sample server celler server.
+  description: pwaa 백엔드 REST API swagger.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
@@ -694,7 +707,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/entity.User'
+            $ref: '#/definitions/controllers.UserRes'
         "400":
           description: Bad Request
           schema:

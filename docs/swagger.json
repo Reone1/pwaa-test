@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "This is a sample server celler server.",
+        "description": "pwaa 백엔드 REST API swagger.",
         "title": "Swagger Example API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
@@ -784,7 +784,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/entity.User"
+                            "$ref": "#/definitions/controllers.UserRes"
                         }
                     },
                     "400": {
@@ -1088,6 +1088,26 @@
             "properties": {
                 "privacyPolicyConsent": {
                     "type": "boolean"
+                }
+            }
+        },
+        "controllers.UserRes": {
+            "type": "object",
+            "properties": {
+                "create_at": {
+                    "type": "string"
+                },
+                "nickName": {
+                    "type": "string"
+                },
+                "privacyPolicyConsent": {
+                    "type": "boolean"
+                },
+                "type": {
+                    "type": "string"
+                },
+                "update_at": {
+                    "type": "string"
                 }
             }
         },

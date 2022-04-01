@@ -1,17 +1,17 @@
-FROM  golang:1.17 as builder
+# syntax=docker/dockerfile:1
 
-WORKDIR /tmp/tiny-golang-image
+FROM golang:1.16-alpine
+
+WORKDIR /app
+
 COPY . .
 
-RUN go mod tidy \
-    && go get -u -d -v ./...
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -ldflags '-s -w' -o main ./main.go
-
-FROM scratch
-COPY --from=builder /tmp/tiny-golang-image /
+RUN go mod download
 
 EXPOSE 8080
 
-ENV PORT 8080
+COPY ./ ./
 
-CMD ["/main"]
+RUN go build -o pwaa .
+
+ENTRYPOINT ["./pwaa"]
