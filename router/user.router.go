@@ -5,6 +5,7 @@ import (
 	authGaurd "pwaa-test.com/module/utils/auth-gaurd"
 )
 
+
 func init() {
 	userController := new(controllers.UserController)
 	authController := new(controllers.AuthController)

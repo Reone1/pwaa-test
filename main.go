@@ -43,11 +43,11 @@ func CORSMiddleware() gin.HandlerFunc {
 		c.Next()
 	}
 }
+
 func main (){
 	utils.GetENV()
 	db.SetDatabase()
 	r := router.SetRouter()
-	r.Use(CORSMiddleware())
 
 	docs.SwaggerInfo.BasePath = ""
 
