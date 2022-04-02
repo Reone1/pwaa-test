@@ -3,6 +3,7 @@ package router
 import (
 	"bytes"
 	"fmt"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -43,7 +44,10 @@ func ginBodyLogMiddleware() gin.HandlerFunc {
     // statusCode := c.Writer.Status()
         //ok this is an request with error, let's make a record for it
         // now print body (or log in your preferred way)
-		fmt.Println("Response body: " + blw.body.String())
+		path := c.Request.URL.Path
+		if !strings.Contains(path, "swagger") {
+			fmt.Println("Response body: " + blw.body.String())
+		}
 	}
 }
 func init() {
@@ -53,5 +57,8 @@ func init() {
 	router.Use( CORSMiddleware(), ginBodyLogMiddleware() )
 }
 func SetRouter() *gin.Engine{
+	PwaaRouter()
+	BottleRouter()
+	UserRouter()
 	return router
 }

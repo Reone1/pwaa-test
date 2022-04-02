@@ -6,7 +6,7 @@ import (
 )
 
 
-func init() {
+func UserRouter() {
 	userController := new(controllers.UserController)
 	authController := new(controllers.AuthController)
 

@@ -5,7 +5,7 @@ import (
 	authGaurd "pwaa-test.com/module/utils/auth-gaurd"
 )
 
-func init() {
+func PwaaRouter() {
 	controller := new(controllers.PwaaController)
 	hplogRouter := router.Group("/pwaa")
 	hplogRouter.Use(authGaurd.AuthMiddleware)

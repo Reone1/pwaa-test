@@ -5,7 +5,7 @@ import (
 	authGaurd "pwaa-test.com/module/utils/auth-gaurd"
 )
 
-func init() {
+func BottleRouter() {
 	controller := new(controllers.BottleController)
 	bottleRouter := router.Group("/bottle")
 	bottleRouter.Use(authGaurd.AuthMiddleware)
