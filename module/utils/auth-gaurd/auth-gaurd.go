@@ -13,13 +13,13 @@ import (
 )
 
 func AuthMiddleware(c *gin.Context) {
-	if len(c.Request.Header["Authorization"]) == 0 {
-		httputil.NewError(c, http.StatusUnauthorized, errors.New("not 'Authorization' header"))
+	if len(c.Request.Header["Auth-Token"]) == 0 {
+		httputil.NewError	(c, http.StatusUnauthorized, errors.New("not 'Authorization' header"))
 		c.Abort()
 	}
 	jwtModule := new(jwt.Module)
 	fmt.Print(c.Request.Header)
-	auth := c.Request.Header["Authorization"][0]
+	auth := c.Request.Header["Auth-Token"][0]
 	if len(auth) == 0 {
 		httputil.NewError(c, http.StatusUnauthorized, errors.New("not 'Authorization' header"))
 		c.Abort()
