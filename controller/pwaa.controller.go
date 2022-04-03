@@ -103,14 +103,12 @@ type GetPwaasRequestBody struct {
 // @Router       /pwaa/list [get]
 // @Security ApiKeyAuth
 func (control *PwaaController) GetPwaaList(c *gin.Context) {
-	getId, ok := c.Get("userId")
-	if !ok {
+	if _, ok := c.Get("userId"); !ok {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("not found UserId"))
 		return	
 	}
-	userId := fmt.Sprintf("%v", getId)
 	BottleId := c.Request.URL.Query().Get("bottleId")
-	pwaas, err := PwaaService.GetManyByBottle(userId, BottleId)
+	pwaas, err := PwaaService.GetManyByBottle( BottleId)
 	if err != nil{
 		httputil.NewError(c, http.StatusNotExtended, err)
 		return

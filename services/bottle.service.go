@@ -74,19 +74,26 @@ func (service *BottleService) UpdateIsOpen(userId, bottleId string) error {
 		return err
 	}
 	bottle.IsOpen = !bottle.IsOpen
-	bottle.ImgUri = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com/1/1.png"
+
+	pwaaService := new(PwaaService)
+	count, err:= pwaaService.GetPriceOfPwaas(bottleId)
+	if err != nil {
+		return err
+	}
+	fmt.Print(count)
+	bottle.ImgUri = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com/2000/1.svg"
 	if err := mgm.Coll(bottle).Update(bottle); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (service *BottleService) UpdateImgUri(userId, bottleId, UpdateImgUri string) error {
+func (service *BottleService) UpdateImgUri(userId, bottleId, imgUri string) error {
 	bottle := &entity.Bottle{}
 	if err := mgm.Coll(&entity.Bottle{}).FindByID(bottleId, bottle); err != nil {
 		return err
 	}
-	bottle.ImgUri = UpdateImgUri
+	bottle.ImgUri = imgUri
 	if err := mgm.Coll(bottle).Update(bottle); err != nil {
 		return err
 	}

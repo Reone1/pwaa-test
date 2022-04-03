@@ -43,15 +43,14 @@ type GetBottleResponse struct {
 // @Router       /bottle [get]
 // @Security ApiKeyAuth
 func (b *BottleController) GetOne(c *gin.Context) {
-	data, ok := c.Get("userId")
-	if !ok {
+	
+	if _, ok := c.Get("userId"); !ok {
 		httputil.NewError(c, http.StatusBadRequest, errors.New("not authorized"))
 		return	
 	}
-	userId := fmt.Sprintf("%v", data)
 	query := c.Request.URL.Query()
 	var totalWorth int = 0
-	pwaas, err := PwaaService.GetManyByBottle(userId, query.Get("bottleId"));
+	pwaas, err := PwaaService.GetManyByBottle(query.Get("bottleId"));
 	if  err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
