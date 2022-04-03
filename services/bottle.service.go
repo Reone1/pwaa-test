@@ -75,7 +75,7 @@ func (service *BottleService) UpdateIsOpenStatus(userId, bottleId string) error 
 	}
 	bottle.IsOpen = !bottle.IsOpen
 
-	bottle.ImgUri = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com/2000/1.svg"
+	bottle.ImgUri = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com/2000/1.png"
 	if err := mgm.Coll(bottle).Update(bottle); err != nil {
 		return err
 	}
