@@ -68,19 +68,13 @@ func (service *BottleService) FindList(userId , isOpen string) ([]entity.Bottle,
 	return bottles ,nil
 }
 
-func (service *BottleService) UpdateIsOpen(userId, bottleId string) error {
+func (service *BottleService) UpdateIsOpenStatus(userId, bottleId string) error {
 	bottle := &entity.Bottle{}
 	if err := mgm.Coll(&entity.Bottle{}).FindByID(bottleId, bottle); err != nil {
 		return err
 	}
 	bottle.IsOpen = !bottle.IsOpen
 
-	pwaaService := new(PwaaService)
-	count, err:= pwaaService.GetPriceOfPwaas(bottleId)
-	if err != nil {
-		return err
-	}
-	fmt.Print(count)
 	bottle.ImgUri = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com/2000/1.svg"
 	if err := mgm.Coll(bottle).Update(bottle); err != nil {
 		return err

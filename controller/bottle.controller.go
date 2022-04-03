@@ -215,7 +215,7 @@ func (b *BottleController) UpdateBottleStatus(c *gin.Context) {
 		return
 	}
 
-	if err := bottleService.UpdateIsOpen(userId, body.BottleId); err != nil {
+	if err := bottleService.UpdateIsOpenStatus(userId, body.BottleId); err != nil {
 		httputil.NewError(c, http.StatusNotFound, err)
 		return
 	}
