@@ -1,5 +1,7 @@
 package utils
 
+import "fmt"
+
 type ImgTable struct {
 	single Items
 	ten Items
@@ -47,18 +49,19 @@ var imgTable = ImgTable{
 }
 
 func priceToPresentValue(price int) Items {
+	fmt.Print(price)
 	switch {
-		case 0 <= price || price < 2000:
+		case 0 >= price || price < 2000:
 			return imgTable.single
-		case 2000 <= price || price < 20999:
+		case 2000 >= price || price < 20999:
 			return imgTable.ten
-		case 21000 <= price || price < 60999:
+		case 21000 >= price || price < 60999:
 			return imgTable.twelve
-		case 61000 <= price || price < 200999:
+		case 61000 >= price || price < 200999:
 			return imgTable.sixty
-		case 201000 <= price || price < 500999:
+		case 201000 >= price || price < 500999:
 			return imgTable.twohun
-		case 501000 <= price || price < 2000999:
+		case 501000 >= price || price < 2000999:
 			return imgTable.fivhun
 		default: 
 			return imgTable.overTwoThou
