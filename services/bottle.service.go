@@ -78,13 +78,17 @@ func (service *BottleService) UpdateIsOpenStatus(userId, bottleId string) error 
 	var totalWorth int = 0
 	pwaaService := new(PwaaService)
 	pwaas, err := pwaaService.GetManyByBottle(userId)
+
 	if err != nil {
 		return err
 	}
+
 	for _, pwaa := range pwaas {
 		totalWorth += pwaa.Worth
 	}
-	utils.ImgPathStr(totalWorth)
+	
+	bottle.ImgUri = utils.ImgPathStr(totalWorth)
+
 	if err := mgm.Coll(bottle).Update(bottle); err != nil {
 		return err
 	}
