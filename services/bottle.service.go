@@ -8,6 +8,7 @@ import (
 	"github.com/kamva/mgm/v3"
 	"go.mongodb.org/mongo-driver/bson"
 	"pwaa-test.com/models/entity"
+	utils "pwaa-test.com/utils"
 )
 
 type BottleService struct {}
@@ -74,8 +75,16 @@ func (service *BottleService) UpdateIsOpenStatus(userId, bottleId string) error 
 		return err
 	}
 	bottle.IsOpen = !bottle.IsOpen
-
-	bottle.ImgUri = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com/2000/1.png"
+	var totalWorth int = 0
+	pwaaService := new(PwaaService)
+	pwaas, err := pwaaService.GetManyByBottle(userId)
+	if err != nil {
+		return err
+	}
+	for _, pwaa := range pwaas {
+		totalWorth += pwaa.Worth
+	}
+	utils.ImgPathStr(totalWorth)
 	if err := mgm.Coll(bottle).Update(bottle); err != nil {
 		return err
 	}

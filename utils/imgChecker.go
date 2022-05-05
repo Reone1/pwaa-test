@@ -9,17 +9,41 @@ type ImgTable struct {
 	fivhun Items
 	overTwoThou Items
 }
-type Items = []string
+type Items struct {
+	scale string
+	variants []string
+} 
 
-var basePath = "img source base string"
+var basePath = "https://pwaa-result-img.s3.ap-northeast-2.amazonaws.com"
 var imgTable = ImgTable{
-	single: Items{"caramel"}, 
-	ten: Items{"ice_cream"},
-	twelve: Items{"candle"},
-	sixty: Items{"shoeses"},
-	twohun: Items{"game_machine"},
-	fivhun: Items{"cell_phone"},
-	overTwoThou: Items{"luxury_watch"},
+	single: Items{
+		scale: "1",
+		variants: []string{"caramel"},
+	}, 
+	ten: Items{
+		scale: "2000",
+		variants:[]string{"ice_cream"},
+	},
+	twelve: Items{
+		scale: "20000",
+		variants: []string{"candle"},
+	},
+	sixty: Items{
+		scale: "60000",
+		variants: [] string{"shoes"},
+	},
+	twohun: Items{
+		scale: "200000",
+		variants: []string{"game_machine"},
+	},
+	fivhun: Items{
+		scale: "500000",
+		variants: []string{"cell_phone"},
+	},
+	overTwoThou: Items{
+		scale: "2000000",
+		variants: []string{"luxury_watch"},
+	},
 }
 
 func priceToPresentValue(price int) Items {
@@ -46,7 +70,7 @@ func getRandomIndex(length int) int {
 
 func ImgPathStr(price int) string {
 	var presentValue = priceToPresentValue(price)
-	var index = getRandomIndex(len(presentValue))
-	var item = presentValue[index]
-	return basePath + item + ".png"
+	var index = getRandomIndex(len(presentValue.variants))
+	var item = presentValue.variants[index]
+	return basePath + "/"+ presentValue.scale + "/" + item + ".png"
 }
